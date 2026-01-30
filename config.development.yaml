@@ -1,0 +1,74 @@
+# 应用配置
+system:
+  env: "development"
+  debug: true
+  port: 8081
+  name: "gin-naive-admin-development"
+
+# 路由配置
+router:
+  router-prefix: "/api"
+  path: "uploads/file"
+
+# 数据库配置
+database:
+  host: "127.0.0.1"
+  port: "3306"
+  user: "root"
+  password: "123456"
+  db_name: "gin-naive-admin"
+  config: "charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Asia%2FShanghai"
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime: 3600
+  log-mode: ""
+  log-zap: false
+  engine: "InnoDB"
+  prefix: ""
+  singular: false
+
+# Redis 配置
+redis:
+  db: 0
+  addr: "127.0.0.1:6379"
+  password: "123456"
+
+# Jwt 配置
+jwt:
+  secret_key: "your-secret-key-change-in-production"
+  expire_time: 86400      # 24小时过期
+  refresh_time: 604800    # 7天可刷新
+  issuer: "gin-admin-server"
+  signing_method: "HS256"
+
+#Zap 日志配置
+zap:
+  level: "info"
+  format: "console"
+  prefix: "[gin-naive-admin-development]"
+  director: "log"
+  show-line: true
+  encode-level: "LowercaseColorLevelEncoder"
+  stacktrace-key: "stacktrace"
+  log-in-console: true
+  local-time: true
+  # 日志轮转配置
+  max-age: 1
+  max-size: 100
+  max-backups: 30
+  compress: true
+
+#Cors 跨域配置
+cors:
+  mode: whitelist  #allow-all、whitelist
+  whitelist:
+    - allow-origin: "127.0.0.1:8080"
+      allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
+      allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      allow-credentials: true # 布尔值
+    - allow-origin: example2.com
+      allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
+      allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      allow-credentials: true # 布尔值
