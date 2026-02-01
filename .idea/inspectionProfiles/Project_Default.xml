@@ -1,6 +1,11 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="GoResourceLeak" enabled="true" level="WARNING" enabled_by_default="true">
+      <functions>
+        <function importPath="gin-admin-server/initialize/server" name="initServer" />
+      </functions>
+    </inspection_tool>
     <inspection_tool class="LanguageDetectionInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
   </profile>
 </component>

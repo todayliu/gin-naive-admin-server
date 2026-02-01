@@ -47,7 +47,7 @@ jwt:
   secret-key: "your-secret-key-change-in-production"
   expires-time: 86400      # 24小时过期
   refresh-time: 604800    # 7天可刷新
-  buffer-time: 14400 #缓冲时间
+  buffer-time: 3600 #缓冲时间
   issuer: "gin-admin-server"
 
 #Zap 日志配置

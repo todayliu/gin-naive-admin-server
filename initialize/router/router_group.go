@@ -2,7 +2,9 @@ package router
 
 import (
 	"gin-admin-server/api/login"
+	"gin-admin-server/api/menu"
 	"gin-admin-server/global"
+	"gin-admin-server/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,16 +23,20 @@ func (r *_routerGroup) SetRoutesGroup(Router *gin.Engine) {
 		})
 	}
 	{
-		r.SetupPublicRoutes(PublicGroup)
+		r.SetupPublicRouters(PublicGroup)
 	}
 
-	//PrivateGroup := Router.Group(global.GNA_CONFIG.Router.RouterPrefix)
-	//PrivateGroup.Use(middleware.JWTAuth())
+	PrivateGroup := Router.Group(global.GNA_CONFIG.Router.RouterPrefix)
+	PrivateGroup.Use(middleware.JWTAuth())
 	{
-
+		r.SetupPrivateRouters(PrivateGroup)
 	}
 }
 
-func (r *_routerGroup) SetupPublicRoutes(PublicGroup *gin.RouterGroup) {
+func (r *_routerGroup) SetupPublicRouters(PublicGroup *gin.RouterGroup) {
 	login.LoginRouter.InitLoginRouter(PublicGroup)
+}
+
+func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {
+	menu.MenuRouter.InitMenuRouter(PrivateGroup)
 }

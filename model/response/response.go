@@ -17,6 +17,7 @@ const (
 	ERROR    = 201
 	SUCCESS  = 200
 	NOTFOUND = 404
+	TOKEN    = 401
 )
 
 func Result(code int, data interface{}, message string, c *gin.Context, success bool) {
@@ -59,4 +60,7 @@ func FailWithDetailed(data interface{}, message string, c *gin.Context) {
 
 func FailNotFound(data interface{}, message string, c *gin.Context) {
 	Result(NOTFOUND, data, message, c, false)
+}
+func FailWithMessageByToken(message string, c *gin.Context) {
+	Result(TOKEN, map[string]interface{}{}, message, c, false)
 }
