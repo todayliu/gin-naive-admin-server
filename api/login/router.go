@@ -11,6 +11,7 @@ type _loginRouter struct{}
 func (l *_loginRouter) InitLoginRouter(Router *gin.RouterGroup) {
 	loginRouter := Router.Group("login")
 	{
-		loginRouter.POST("", LoginService.Login)
+		loginRouter.POST("captcha", LoginService.Captcha)
+		loginRouter.POST("login", LoginService.Login)
 	}
 }

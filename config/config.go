@@ -8,4 +8,5 @@ type Server struct {
 	Router   RouterConfig   `mapstructure:"router" json:"router" yaml:"router"`
 	Cors     CorsConfig     `mapstructure:"cors" json:"cors" yaml:"cors"`
 	Jwt      JwtConfig      `mapstructure:"jwt" json:"jwt" yaml:"jwt"`
+	Captcha  CaptchaConfig  `mapstructure:"captcha" json:"captcha" yaml:"captcha"`
 }

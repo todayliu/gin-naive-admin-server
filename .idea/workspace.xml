@@ -5,48 +5,70 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df226c1d-bba0-42dd-91ea-4c28a47396ca" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/login/model.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/captcha.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/captcha_redis/captcha_redis.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/validator.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/verify.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/login/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/login/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.development.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.development.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/cors.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/cors.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
   <component name="GOROOT" url="file://$USER_HOME$/.gvm/gos/go1.25.6" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="38zGz9kBEjVMe92pHDY3YN6YthZ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Go Build.gin-naive-admin-server.executor": "Run",
-    "Go Build.gin-naive-admin.executor": "Run",
-    "Go Build.go build gin-naive-admin-server.executor": "Run",
-    "Go Build.go build gin-naive-admin.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
-    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/liulijian",
-    "onboarding.tips.debug.path": "/Users/liulijian/Documents/gin-naive-admin/gin-naive-admin-server/main.go"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.gin-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.gin-naive-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.gin-naive-admin.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gin-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gin-naive-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gin-naive-admin.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginOnboardingV2&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/liulijian&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/liulijian/Documents/gin-naive-admin/gin-naive-admin-server/main.go&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
-    <configuration name="go build gin-admin-server" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="gin-admin-server" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="gin-naive-admin-server" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
@@ -57,7 +79,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build gin-admin-server" />
+        <item itemvalue="Go Build.gin-admin-server" />
       </list>
     </recent_temporary>
   </component>

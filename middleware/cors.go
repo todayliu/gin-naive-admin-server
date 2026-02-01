@@ -40,6 +40,7 @@ func CorsByAll() gin.HandlerFunc {
 func CorsByWhitelist() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
+		print(origin)
 		if origin == "" {
 			host := c.Request.Host
 			local1 := fmt.Sprintf("127.0.0.1:%d", global.GNA_CONFIG.System.Port)
