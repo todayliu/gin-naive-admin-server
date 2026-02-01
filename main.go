@@ -8,6 +8,7 @@ import (
 	"gin-admin-server/initialize/server"
 	"gin-admin-server/initialize/viper"
 	"gin-admin-server/initialize/zap_log"
+	"gin-admin-server/utils/validator"
 
 	"go.uber.org/zap"
 )
@@ -22,7 +23,8 @@ func main() {
 		_ = global.GNA_LOG.Sync() // 生产环境通常忽略 Stdout 的 Sync 报错
 	}()
 	zap.ReplaceGlobals(global.GNA_LOG)
-
+	//初始化验证规则规则
+	validator.InitValidator()
 	//初始化 gorm 连接数据库
 	global.GNA_DB = gorm.InitGorm()
 	if global.GNA_DB != nil {

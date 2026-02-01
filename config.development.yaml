@@ -44,11 +44,11 @@ redis:
 
 # Jwt 配置
 jwt:
-  secret_key: "your-secret-key-change-in-production"
-  expire_time: 86400      # 24小时过期
-  refresh_time: 604800    # 7天可刷新
+  secret-key: "your-secret-key-change-in-production"
+  expires-time: 86400      # 24小时过期
+  refresh-time: 604800    # 7天可刷新
+  buffer-time: 14400 #缓冲时间
   issuer: "gin-admin-server"
-  signing_method: "HS256"
 
 #Zap 日志配置
 zap:

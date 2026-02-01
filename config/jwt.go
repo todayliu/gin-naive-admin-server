@@ -1,9 +1,9 @@
 package config
 
 type JwtConfig struct {
-	SecretKey     string `mapstructure:"secret_key" json:"secret_key" yaml:"secret_key"`
-	ExpiresTime   int64  `mapstructure:"expires_time" json:"expires_time" yaml:"expires_time"`
-	RefreshTime   int64  `mapstructure:"refresh_time" json:"refresh_time" yaml:"refresh_time"`
-	Issuer        string `mapstructure:"issuer" json:"issuer" yaml:"issuer"`
-	SigningMethod string `mapstructure:"signing_method" json:"signing_method" yaml:"signing_method"`
+	SecretKey   string `mapstructure:"secret-key" json:"secret-key" yaml:"secret-key"`
+	ExpiresTime int64  `mapstructure:"expires-time" json:"expires-time" yaml:"expires-time"`
+	RefreshTime int64  `mapstructure:"refresh-time" json:"refresh-time" yaml:"refresh-time"`
+	BufferTime  int64  `mapstructure:"buffer-time" json:"buffer-time" yaml:"buffer-time"`
+	Issuer      string `mapstructure:"issuer" json:"issuer" yaml:"issuer"`
 }
