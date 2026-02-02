@@ -13,7 +13,7 @@ import (
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		accessToken := c.Request.Header.Get("Access-Token")
+		accessToken := c.Request.Header.Get("AccessToken")
 		if accessToken == "" {
 			response.FailWithMessageByToken("未登录或非法访问", c)
 			c.Abort()

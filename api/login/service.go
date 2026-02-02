@@ -120,6 +120,7 @@ func (ls *_LoginService) CreateToken(c *gin.Context, userInfo user.User) {
 		response.FailWithMessage("获取token失败!", c)
 		return
 	}
+
 	response.OkWithDetailed(LoginResponse{
 		UserInfo: userInfo,
 		Token:    token,

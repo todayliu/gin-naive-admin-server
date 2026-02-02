@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="df226c1d-bba0-42dd-91ea-4c28a47396ca" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/login/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/login/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/menu/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/menu/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/jwt_util/clamis.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/jwt_util/clamis.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/validator/validator_message.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/validator/validator_message.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

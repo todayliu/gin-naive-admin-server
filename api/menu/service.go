@@ -15,7 +15,16 @@ var MenuService = new(_menuService)
 
 func (ms *_menuService) InitMenuList(c *gin.Context) {
 	userId := jwt_util.GetUserID(c)
+	routes, err := ms.GetMenuList(userId)
+	if err != nil {
+		response.FailWithMessage("获取用户菜单失败", c)
+		return
+	}
 
+	response.OkWithData(routes, c)
+}
+
+func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 	var menus []*SysMenu
 
 	// 用户 → 角色 → 菜单
@@ -30,12 +39,17 @@ func (ms *_menuService) InitMenuList(c *gin.Context) {
 
 	if err != nil {
 		global.GNA_LOG.Error("获取用户菜单失败: " + err.Error())
-		response.FailWithMessage("获取用户菜单失败", c)
-		return
+		return nil, err
 	}
-	print(menus)
 	menuTree := ms.buildMenuTree(menus, 0)
-	response.OkWithData(menuTree, c)
+
+	var routes []MenuResponse
+	for _, menu := range menuTree {
+		route := ms.convertMenuToRoute(menu)
+		routes = append(routes, route)
+	}
+
+	return routes, err
 }
 
 func (ms *_menuService) buildMenuTree(menus []*SysMenu, parentID uint) []*SysMenu {
@@ -55,4 +69,41 @@ func (ms *_menuService) buildMenuTree(menus []*SysMenu, parentID uint) []*SysMen
 	})
 
 	return tree
+}
+
+func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
+	route := MenuResponse{
+		Type:      menu.Type,
+		Path:      menu.Path,
+		Name:      menu.Name,
+		Component: menu.Component,
+		Sort:      menu.Sort,
+		Status:    menu.Status,
+		Meta: MenuMeta{
+			Title:                menu.Title,
+			Icon:                 menu.Icon,
+			TitleI18nKey:         menu.TitleI18nKey,
+			FixedInTabs:          menu.FixedInTabs,
+			HideInMenu:           menu.HideInMenu,
+			KeepAlive:            menu.KeepAlive,
+			Link:                 menu.Link,
+			LinkMode:             menu.LinkMode,
+			NestedRouteRenderEnd: menu.NestedRouteRenderEnd,
+		},
+	}
+
+	if menu.Redirect != "" {
+		route.Redirect = &Redirect{
+			Name: menu.Redirect,
+		}
+	}
+
+	if len(menu.Children) > 0 {
+		for _, child := range menu.Children {
+			childRoute := ms.convertMenuToRoute(child)
+			route.Children = append(route.Children, childRoute)
+		}
+	}
+
+	return route
 }

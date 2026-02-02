@@ -7,11 +7,11 @@ import (
 )
 
 func GetClaims(c *gin.Context) (*CustomClaims, error) {
-	token := c.Request.Header.Get("x-token")
+	token := c.Request.Header.Get("AccessToken")
 	j := NewJWT()
 	claims, err := j.ParseToken(token)
 	if err != nil {
-		global.GNA_LOG.Error("从Gin的Context中获取从jwt解析信息失败, 请检查请求头是否存在x-token且claims是否为规定结构")
+		global.GNA_LOG.Error("从Gin的Context中获取从jwt解析信息失败, 请检查请求头是否存在AccessToken且claims是否为规定结构")
 	}
 	return claims, err
 }

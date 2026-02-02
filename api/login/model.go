@@ -1,6 +1,8 @@
 package login
 
-import "gin-admin-server/api/user"
+import (
+	"gin-admin-server/api/user"
+)
 
 type CaptchaResponse struct {
 	CaptchaId     string `json:"captchaId"`
