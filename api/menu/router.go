@@ -10,5 +10,6 @@ func (l *_menuRouter) InitMenuRouter(Router *gin.RouterGroup) {
 	menuRouter := Router.Group("menu")
 	{
 		menuRouter.POST("router", MenuService.InitMenuList)
+		menuRouter.POST("list", MenuService.GetAllMenuList)
 	}
 }

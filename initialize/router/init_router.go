@@ -16,12 +16,12 @@ func InitRoute() *gin.Engine {
 	Router := gin.New()
 
 	RouterCfg.SetupMiddleware(Router)
+	
+	RouterCfg.SetupErrorHandlers(Router)
 	// 为文件提供静态地址
 	RouterCfg.SetupStaticFiles(Router)
 	//注册路由
 	RouterGroup.SetRoutesGroup(Router)
-
-	RouterCfg.SetupErrorHandlers(Router)
 
 	global.GNA_LOG.Info("路由注册成功")
 	return Router

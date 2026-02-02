@@ -33,7 +33,7 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 		Select("DISTINCT m.*").
 		Joins("JOIN sys_role_menu rm ON ur.sys_role_id = rm.sys_role_id").
 		Joins("JOIN sys_menu m ON rm.sys_menu_id = m.id").
-		Where("ur.user_id = ? AND m.status = 1", userId).
+		Where("ur.user_id = ? AND m.status = 1 AND m.type IN (0, 1)", userId).
 		Order("m.sort ASC").
 		Find(&menus).Error
 
@@ -96,6 +96,8 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 		route.Redirect = &Redirect{
 			Name: menu.Redirect,
 		}
+	} else {
+		route.Redirect = nil
 	}
 
 	if len(menu.Children) > 0 {
@@ -106,4 +108,18 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 	}
 
 	return route
+}
+
+func (ms *_menuService) GetAllMenuList(c *gin.Context) {
+	var menus []*SysMenu
+	err := global.GNA_DB.Order("sort ASC").Find(&menus).Error
+	if err != nil {
+		global.GNA_LOG.Error("获取菜单列表失败: " + err.Error())
+		response.FailWithMessage("获取菜单列表失败", c)
+		return
+	}
+
+	menuTree := ms.buildMenuTree(menus, 0)
+
+	response.OkWithData(menuTree, c)
 }
