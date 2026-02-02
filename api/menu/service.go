@@ -14,53 +14,11 @@ type _menuService struct{}
 var MenuService = new(_menuService)
 
 func (ms *_menuService) InitMenuList(c *gin.Context) {
-	//var menus []*SysMenu
-	ms.getSysRole(c)
-	//response.OkWithMessage("获取菜单成功", c)
-}
-
-func (ms *_menuService) getSysRole(c *gin.Context) {
 	userId := jwt_util.GetUserID(c)
-
-	//var userRoleIDs []uint
-	//err := global.GNA_DB.Table("sys_user_role").Select("sys_role_id").Where("user_id = ?", userId).Pluck("sys_role_id", &userRoleIDs).Error
-	//if err != nil {
-	//	global.GNA_LOG.Error("获取用户角色信息失败: " + err.Error())
-	//	response.FailWithMessage("获取用户角色信息失败", c)
-	//	return
-	//}
-	//if len(userRoleIDs) == 0 {
-	//	response.OkWithData([]*SysMenu{}, c)
-	//	return
-	//}
-	//
-	//var menuIDs []uint
-	//err = global.GNA_DB.Table("sys_role_menu").Select("DISTINCT sys_menu_id").Where("sys_role_id IN ?", userRoleIDs).Pluck("sys_menu_id", &menuIDs).Error
-	//if err != nil {
-	//	global.GNA_LOG.Error("获取用户角色菜单失败: " + err.Error())
-	//	response.FailWithMessage("获取用户角色菜单失败", c)
-	//	return
-	//}
-	//if len(menuIDs) == 0 {
-	//	response.OkWithData([]*SysMenu{}, c)
-	//	return
-	//}
-	//
-	//var menus []*SysMenu
-	//err = global.GNA_DB.Where("id IN ? AND status = 1", menuIDs).Order("sort ASC").Find(&menus).Error
-	//if err != nil {
-	//	global.GNA_LOG.Error("获取用户菜单失败: " + err.Error())
-	//	response.FailWithMessage("获取用户菜单失败", c)
-	//	return
-	//}
-	//if len(menus) == 0 {
-	//	response.OkWithData([]*SysMenu{}, c)
-	//	return
-	//}
 
 	var menus []*SysMenu
 
-	// 一条SQL完成：用户 → 角色 → 菜单
+	// 用户 → 角色 → 菜单
 	err := global.GNA_DB.Unscoped().
 		Table("sys_user_role ur").
 		Select("DISTINCT m.*").
@@ -75,6 +33,7 @@ func (ms *_menuService) getSysRole(c *gin.Context) {
 		response.FailWithMessage("获取用户菜单失败", c)
 		return
 	}
+	print(menus)
 	menuTree := ms.buildMenuTree(menus, 0)
 	response.OkWithData(menuTree, c)
 }

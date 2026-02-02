@@ -9,10 +9,10 @@ import (
 type SysMenu struct {
 	global.GNA_MODEL
 	ParentId  uint   `gorm:"column:parent_id;not null;default:1;comment:父菜单ID" json:"parentId"`
-	Type      uint   `gorm:"column:type;not null;default:1;comment:菜单类型（1:菜单  2:按钮）" json:"type"`
-	Path      string `gorm:"column:path;not null;comment:路由路径" json:"path"`
+	Type      uint   `gorm:"column:type;not null;default:1;comment:菜单类型（1:菜单  2:目录  3:按钮）" json:"type"`
+	Path      string `gorm:"column:path;comment:路由路径" json:"path"`
 	Name      string `gorm:"column:name;common:路由名称" json:"name"`
-	Component string `gorm:"column:component;not null;comment:路由组件路径" json:"component"`
+	Component string `gorm:"column:component;comment:路由组件路径" json:"component"`
 	Redirect  string `gorm:"column:redirect;comment:重定向" json:"redirect"`
 
 	//Meta 字段
