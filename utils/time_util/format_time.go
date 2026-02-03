@@ -34,3 +34,18 @@ func (t *LocalTime) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("can not convert %v to LocalTime", v)
 }
+
+func (t *LocalTime) UnmarshalJSON(data []byte) error {
+	// 去掉 JSON 字符串前后的双引号
+	str := string(data)
+	if str == "null" || str == "" {
+		return nil
+	}
+	// 按照你约定的格式解析字符串
+	now, err := time.Parse(`"2006-01-02 15:04:05"`, str)
+	if err != nil {
+		return err
+	}
+	*t = LocalTime(now)
+	return nil
+}

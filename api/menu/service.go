@@ -4,6 +4,7 @@ import (
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
 	"gin-admin-server/utils/jwt_util"
+	"gin-admin-server/utils/validator"
 	"sort"
 
 	"github.com/gin-gonic/gin"
@@ -122,4 +123,25 @@ func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 	menuTree := ms.buildMenuTree(menus, 0)
 
 	response.OkWithData(menuTree, c)
+}
+
+func (ms *_menuService) UpdateMenu(c *gin.Context) {
+	var menu SysMenu
+	err := c.ShouldBindJSON(&menu)
+
+	if err != nil {
+		errMessage := validator.GetValidatorErrorMessage(err, menu)
+		global.GNA_LOG.Error(errMessage)
+		response.FailWithMessage(errMessage, c)
+		return
+	}
+	err = global.GNA_DB.Save(&menu).Error
+
+	if err != nil {
+		global.GNA_LOG.Error(err.Error())
+		response.FailWithMessage("修改菜单失败", c)
+		return
+	}
+
+	response.Ok(c)
 }

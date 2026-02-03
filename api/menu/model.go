@@ -9,14 +9,14 @@ import (
 type SysMenu struct {
 	global.GNA_MODEL
 	ParentId  uint   `gorm:"column:parent_id;not null;default:1;comment:父菜单ID" json:"parentId"`
-	Type      uint   `gorm:"column:type;not null;default:1;comment:菜单类型（1:菜单  2:目录  3:按钮）" json:"type"`
-	Path      string `gorm:"column:path;comment:路由路径" json:"path"`
-	Name      string `gorm:"column:name;unique;common:路由名称" json:"name"`
-	Component string `gorm:"column:component;comment:路由组件路径" json:"component"`
+	Type      string `gorm:"column:type;not null;default:1;comment:菜单类型（0:目录  1:菜单  2:按钮）" json:"type"`
+	Path      string `gorm:"column:path;comment:路由路径" json:"path" binding:"required" message:"路径不能为空"`
+	Name      string `gorm:"column:name;unique;common:路由名称" json:"name" binding:"required" message:"路由名称不能为空"`
+	Component string `gorm:"column:component;comment:路由组件路径" json:"component" binding:"required" message:"组件路径不能为空"`
 	Redirect  string `gorm:"column:redirect;comment:重定向" json:"redirect"`
 
 	//Meta 字段
-	Title                string `gorm:"column:title;not null;comment:菜单标题" json:"title"`
+	Title                string `gorm:"column:title;not null;comment:菜单标题" json:"title"  binding:"required" message:"菜单标题不能为空"`
 	TitleI18nKey         string `gorm:"column:title_i18n_key;comment:国际化key" json:"titleI18nKey"`
 	Icon                 string `gorm:"column:icon;comment:菜单标题" json:"icon"`
 	FixedInTabs          bool   `gorm:"column:fixed_in_tabs;comment:固定在标签页" json:"fixedInTabs"`
@@ -57,7 +57,7 @@ func (SysRole) TableName() string {
 }
 
 type MenuResponse struct {
-	Type      uint           `json:"type"`
+	Type      string         `json:"type"`
 	Path      string         `json:"path"`
 	Name      string         `json:"name"`
 	Component string         `json:"component"`

@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="df226c1d-bba0-42dd-91ea-4c28a47396ca" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/menu/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/menu/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/router.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/menu/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/initialize/router/init_router.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/router/init_router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/validator/validator_message.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/validator/validator_message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/time_util/format_time.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/time_util/format_time.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
