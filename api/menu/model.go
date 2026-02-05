@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"gin-admin-server/api/user"
 	"gin-admin-server/global"
 )
 
@@ -28,34 +27,16 @@ type SysMenu struct {
 	NestedRouteRenderEnd bool   `gorm:"column:nested_route_render_end;comment:是否在当前路由层级结束渲染" json:"nestedRouteRenderEnd"`
 
 	//系统字段
-	Sort   uint `gorm:"column:sort;default:0;comment:排序" json:"sort"`
-	Status uint `gorm:"column:status;default:1;comment:状态（1:启用  2:禁用）" json:"status"`
-	// 关联
+	Sort     uint       `gorm:"column:sort;default:0;comment:排序" json:"sort"`
+	Status   uint       `gorm:"column:status;default:1;comment:状态（1:启用  2:禁用）" json:"status"`
 	Children []*SysMenu `gorm:"-" json:"children,omitempty"`
-	Roles    []*SysRole `gorm:"many2many:sys_role_menu;" json:"-"`
 }
 
 func (SysMenu) TableName() string {
 	return "sys_menu"
 }
 
-// SysRole 用户角色表
-type SysRole struct {
-	global.GNA_MODEL
-	Code        string `gorm:"column:code;unique;not null;comment:角色编码" json:"code"`
-	Name        string `gorm:"column:name;50;not null;comment:角色名称" json:"name"`
-	Description string `gorm:"column:description;comment:描述" json:"description"`
-	DataScope   int8   `gorm:"column:data_scope;default:1;comment:数据权限" json:"dataScope"`
-	Status      int8   `gorm:"column:status;default:1;comment:角色状态" json:"status"`
-
-	// 关联
-	Menus []*SysMenu   `gorm:"many2many:sys_role_menu;" json:"menus,omitempty"`
-	Users []*user.User `gorm:"many2many:sys_user_role;" json:"users,omitempty"`
-}
-
-func (SysRole) TableName() string {
-	return "sys_role"
-}
+// SysRole 用户角色
 
 type MenuResponse struct {
 	Type      string         `json:"type"`

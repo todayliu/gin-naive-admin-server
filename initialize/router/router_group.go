@@ -3,6 +3,7 @@ package router
 import (
 	"gin-admin-server/api/login"
 	"gin-admin-server/api/menu"
+	"gin-admin-server/api/role"
 	"gin-admin-server/global"
 	"gin-admin-server/middleware"
 	"net/http"
@@ -39,4 +40,6 @@ func (r *_routerGroup) SetupPublicRouters(PublicGroup *gin.RouterGroup) {
 
 func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {
 	menu.MenuRouter.InitMenuRouter(PrivateGroup)
+	role.RoleRouter.InitRoleRouter(PrivateGroup)
+
 }

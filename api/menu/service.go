@@ -43,7 +43,7 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 		global.GNA_LOG.Error("获取用户菜单失败: " + err.Error())
 		return nil, err
 	}
-	menuTree := ms.buildMenuTree(menus, 0)
+	menuTree := ms.BuildMenuTree(menus, 0)
 
 	var routes []MenuResponse
 	for _, menu := range menuTree {
@@ -54,12 +54,12 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 	return routes, err
 }
 
-func (ms *_menuService) buildMenuTree(menus []*SysMenu, parentID uint) []*SysMenu {
+func (ms *_menuService) BuildMenuTree(menus []*SysMenu, parentID uint) []*SysMenu {
 	var tree []*SysMenu
 	for _, menu := range menus {
 		if menu.ParentId == parentID {
 			// 递归构建子菜单
-			children := ms.buildMenuTree(menus, menu.ID)
+			children := ms.BuildMenuTree(menus, menu.ID)
 			if len(children) > 0 {
 				menu.Children = children
 			}
@@ -122,7 +122,7 @@ func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 		return
 	}
 
-	menuTree := ms.buildMenuTree(menus, 0)
+	menuTree := ms.BuildMenuTree(menus, 0)
 
 	response.OkWithData(menuTree, c)
 }
@@ -150,23 +150,17 @@ func (ms *_menuService) UpdateMenu(c *gin.Context) {
 
 func (ms *_menuService) DeleteMenu(c *gin.Context) {
 	id := c.Param("id")
-	var sysMenu SysMenu
-	//err := global.GNA_DB.Where("id = ?", id).Delete(&SysMenu{}).Error
-	//if err != nil {
-	//	global.GNA_LOG.Error("菜单删除失败：" + err.Error())
-	//	response.FailWithMessage("菜单删除失败", c)
-	//	return
-	//}
+	if id == "" {
+		response.FailWithMessage("id 不能为空", c)
+		return
+	}
+
 	err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.First(&sysMenu, id).Error; err != nil {
+		if err := tx.Exec("DELETE FROM sys_role_menu WHERE sys_menu_id = ?", id).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Model(&sysMenu).Association("Roles").Clear(); err != nil {
-			return err
-		}
-
-		if err := tx.Unscoped().Delete(&sysMenu).Error; err != nil {
+		if err := tx.Unscoped().Where("id = ?", id).Delete(&SysMenu{}).Error; err != nil {
 			return err
 		}
 

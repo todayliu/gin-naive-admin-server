@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"gin-admin-server/api/menu"
+	"gin-admin-server/api/role"
 	"gin-admin-server/api/user"
 	"gin-admin-server/config"
 	"gin-admin-server/global"
@@ -42,7 +43,7 @@ func RegisterTables() {
 		// 系统模块表
 		user.User{},
 		menu.SysMenu{},
-		menu.SysRole{},
+		role.SysRole{},
 	)
 	if err != nil {
 		global.GNA_LOG.Error("注册数据表失败", zap.Error(err))

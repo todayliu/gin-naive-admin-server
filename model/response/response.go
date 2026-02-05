@@ -35,7 +35,7 @@ func Ok(c *gin.Context) {
 }
 
 func OkWithMessage(message string, c *gin.Context) {
-	Result(SUCCESS, map[string]interface{}{}, message, c, true)
+	Result(SUCCESS, nil, message, c, true)
 }
 
 func OkWithData(data interface{}, c *gin.Context) {
@@ -47,11 +47,11 @@ func OkWithDetailed(data interface{}, message string, c *gin.Context) {
 }
 
 func Fail(c *gin.Context) {
-	Result(ERROR, map[string]interface{}{}, "操作失败", c, false)
+	Result(ERROR, nil, "操作失败", c, false)
 }
 
 func FailWithMessage(message string, c *gin.Context) {
-	Result(ERROR, map[string]interface{}{}, message, c, false)
+	Result(ERROR, nil, message, c, false)
 }
 
 func FailWithDetailed(data interface{}, message string, c *gin.Context) {
@@ -62,5 +62,5 @@ func FailNotFound(data interface{}, message string, c *gin.Context) {
 	Result(NOTFOUND, data, message, c, false)
 }
 func FailWithMessageByToken(message string, c *gin.Context) {
-	Result(TOKEN, []interface{}{}, message, c, false)
+	Result(TOKEN, nil, message, c, false)
 }
