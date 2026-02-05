@@ -31,7 +31,7 @@ func Result(code int, data interface{}, message string, c *gin.Context, success 
 }
 
 func Ok(c *gin.Context) {
-	Result(SUCCESS, map[string]interface{}{}, "操作成功", c, true)
+	Result(SUCCESS, nil, "操作成功", c, true)
 }
 
 func OkWithMessage(message string, c *gin.Context) {
@@ -62,5 +62,5 @@ func FailNotFound(data interface{}, message string, c *gin.Context) {
 	Result(NOTFOUND, data, message, c, false)
 }
 func FailWithMessageByToken(message string, c *gin.Context) {
-	Result(TOKEN, map[string]interface{}{}, message, c, false)
+	Result(TOKEN, []interface{}{}, message, c, false)
 }

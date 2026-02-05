@@ -8,12 +8,13 @@ import (
 // Menu 用户菜单表
 type SysMenu struct {
 	global.GNA_MODEL
-	ParentId  uint   `gorm:"column:parent_id;not null;default:1;comment:父菜单ID" json:"parentId"`
-	Type      string `gorm:"column:type;not null;default:1;comment:菜单类型（0:目录  1:菜单  2:按钮）" json:"type"`
-	Path      string `gorm:"column:path;comment:路由路径" json:"path" binding:"required" message:"路径不能为空"`
-	Name      string `gorm:"column:name;unique;common:路由名称" json:"name" binding:"required" message:"路由名称不能为空"`
-	Component string `gorm:"column:component;comment:路由组件路径" json:"component" binding:"required" message:"组件路径不能为空"`
-	Redirect  string `gorm:"column:redirect;comment:重定向" json:"redirect"`
+	ParentId  uint    `gorm:"column:parent_id;not null;default:0;comment:父菜单ID" json:"parentId"`
+	Type      string  `gorm:"column:type;not null;default:1;comment:菜单类型（0:目录  1:菜单  2:按钮）" json:"type"`
+	Path      string  `gorm:"column:path;comment:路由路径" json:"path"`
+	Name      string  `gorm:"column:name;unique;common:路由名称" json:"name"`
+	Component string  `gorm:"column:component;comment:路由组件路径" json:"component"`
+	Redirect  string  `gorm:"column:redirect;comment:重定向" json:"redirect"`
+	Perms     *string `gorm:"column:perms;comment:授权标识" json:"perms"`
 
 	//Meta 字段
 	Title                string `gorm:"column:title;not null;comment:菜单标题" json:"title"  binding:"required" message:"菜单标题不能为空"`
@@ -62,6 +63,7 @@ type MenuResponse struct {
 	Name      string         `json:"name"`
 	Component string         `json:"component"`
 	Redirect  *Redirect      `json:"redirect"`
+	Perms     *string        `json:"perms"`
 	Sort      uint           `json:"sort"`
 	Status    uint           `json:"status"`
 	Meta      MenuMeta       `json:"meta"`

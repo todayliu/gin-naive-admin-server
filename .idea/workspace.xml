@@ -9,7 +9,8 @@
       <change beforePath="$PROJECT_DIR$/api/menu/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/menu/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/router.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/menu/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/time_util/format_time.go" beforeDir="false" afterPath="$PROJECT_DIR$/utils/time_util/format_time.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/response/response.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/response/response.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

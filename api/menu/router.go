@@ -12,5 +12,6 @@ func (l *_menuRouter) InitMenuRouter(Router *gin.RouterGroup) {
 		menuRouter.POST("router", MenuService.InitMenuList)
 		menuRouter.POST("list", MenuService.GetAllMenuList)
 		menuRouter.POST("edit", MenuService.UpdateMenu)
+		menuRouter.DELETE("delete/:id", MenuService.DeleteMenu)
 	}
 }

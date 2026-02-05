@@ -24,7 +24,7 @@ func JWTAuth() gin.HandlerFunc {
 		claims, err := j.ParseToken(accessToken)
 		if err != nil {
 			if errors.Is(err, jwt_util.TokenExpired) {
-				response.FailWithMessageByToken("授权已过期", c)
+				response.FailWithMessageByToken("授权已过期，请重新登录", c)
 				c.Abort()
 				return
 			}

@@ -8,6 +8,7 @@ import (
 	"sort"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type _menuService struct{}
@@ -80,6 +81,7 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 		Component: menu.Component,
 		Sort:      menu.Sort,
 		Status:    menu.Status,
+		Perms:     menu.Perms,
 		Meta: MenuMeta{
 			Title:                menu.Title,
 			Icon:                 menu.Icon,
@@ -138,10 +140,44 @@ func (ms *_menuService) UpdateMenu(c *gin.Context) {
 	err = global.GNA_DB.Save(&menu).Error
 
 	if err != nil {
-		global.GNA_LOG.Error(err.Error())
-		response.FailWithMessage("修改菜单失败", c)
+		global.GNA_LOG.Error("菜单修改失败：" + err.Error())
+		response.FailWithMessage("菜单修改失败", c)
 		return
 	}
 
 	response.Ok(c)
+}
+
+func (ms *_menuService) DeleteMenu(c *gin.Context) {
+	id := c.Param("id")
+	var sysMenu SysMenu
+	//err := global.GNA_DB.Where("id = ?", id).Delete(&SysMenu{}).Error
+	//if err != nil {
+	//	global.GNA_LOG.Error("菜单删除失败：" + err.Error())
+	//	response.FailWithMessage("菜单删除失败", c)
+	//	return
+	//}
+	err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.First(&sysMenu, id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Model(&sysMenu).Association("Roles").Clear(); err != nil {
+			return err
+		}
+
+		if err := tx.Unscoped().Delete(&sysMenu).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		global.GNA_LOG.Error("删除菜单失败：" + err.Error())
+		response.FailWithMessage("删除菜单失败", c)
+		return
+	}
+
+	response.OkWithMessage("删除菜单成功", c)
 }
