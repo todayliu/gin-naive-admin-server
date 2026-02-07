@@ -12,7 +12,7 @@ type SysRole struct {
 	Code        string `gorm:"column:code;unique;not null;comment:角色编码" json:"code" binding:"required" message:"角色编码不能为空"`
 	Name        string `gorm:"column:name;50;not null;comment:角色名称" json:"name" binding:"required" message:"角色名称不能为空"`
 	Description string `gorm:"column:description;comment:描述" json:"description"`
-	Status      uint   `gorm:"column:status;default:1;comment:角色状态" json:"status"`
+	Status      *uint  `gorm:"column:status;default:1;comment:角色状态" json:"status"`
 
 	// 关联
 	Menus []*menu.SysMenu `gorm:"many2many:sys_role_menu;" json:"-"`

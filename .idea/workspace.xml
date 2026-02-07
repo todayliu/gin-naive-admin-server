@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="df226c1d-bba0-42dd-91ea-4c28a47396ca" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/api/role/model.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/role/router.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/api/role/service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/page_info/page_info.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/response/page_result.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/menu/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/menu/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/initialize/gorm/init_gorm.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/gorm/init_gorm.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/initialize/router/router_group.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/router/router_group.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/response/response.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/response/response.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/role/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/role/model.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
