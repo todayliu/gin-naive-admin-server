@@ -41,7 +41,7 @@ func RegisterTables() {
 	db := global.GNA_DB
 	err := db.AutoMigrate(
 		// 系统模块表
-		user.User{},
+		user.SysUser{},
 		menu.SysMenu{},
 		role.SysRole{},
 	)

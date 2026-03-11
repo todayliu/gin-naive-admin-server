@@ -16,7 +16,7 @@ type SysRole struct {
 
 	// 关联
 	Menus []*menu.SysMenu `gorm:"many2many:sys_role_menu;" json:"-"`
-	Users []*user.User    `gorm:"many2many:sys_user_role;" json:"-"`
+	Users []*user.SysUser `gorm:"many2many:sys_user_role;" json:"-"`
 }
 
 func (SysRole) TableName() string {

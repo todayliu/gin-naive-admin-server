@@ -78,7 +78,7 @@ func (ls *_LoginService) Login(c *gin.Context) {
 	}
 	global.GNA_REDIS.Set(c.Request.Context(), "login:nonce:"+loginRequest.Username+":"+loginRequest.Nonce, loginRequest.Nonce, 5*time.Minute)
 
-	var userInfo user.User
+	var userInfo user.SysUser
 	err = global.GNA_DB.Where("account = ?", loginRequest.Username).First(&userInfo).Error
 
 	//判断密码
@@ -105,7 +105,7 @@ func (ls *_LoginService) Login(c *gin.Context) {
 	ls.CreateToken(c, userInfo)
 }
 
-func (ls *_LoginService) CreateToken(c *gin.Context, userInfo user.User) {
+func (ls *_LoginService) CreateToken(c *gin.Context, userInfo user.SysUser) {
 	j := &jwt_util.JWT{SigningKey: []byte(global.GNA_CONFIG.Jwt.SecretKey)} // 唯一签名
 	claims := j.CreateClaims(jwt_util.BaseClaims{
 		UUID:    userInfo.UUID,

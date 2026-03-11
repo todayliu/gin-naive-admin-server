@@ -6,7 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="df226c1d-bba0-42dd-91ea-4c28a47396ca" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/login/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/login/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/menu/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/menu/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/role/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/role/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/user/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/user/router.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/user/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/initialize/gorm/init_gorm.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/gorm/init_gorm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/initialize/router/router_group.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/router/router_group.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,29 +44,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "Go Build.gin-admin-server.executor": "Run",
-    "Go Build.gin-naive-admin-server.executor": "Run",
-    "Go Build.gin-naive-admin.executor": "Run",
-    "Go Build.go build gin-admin-server.executor": "Run",
-    "Go Build.go build gin-naive-admin-server.executor": "Run",
-    "Go Build.go build gin-naive-admin.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
-    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/liulijian",
-    "onboarding.tips.debug.path": "/Users/liulijian/Documents/gin-naive-admin/gin-naive-admin-server/main.go"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.gin-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.gin-naive-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.gin-naive-admin.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gin-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gin-naive-admin-server.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build gin-naive-admin.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginOnboardingV2&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/liulijian&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/liulijian/Documents/gin-naive-admin/gin-naive-admin-server/main.go&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/utils/time_util" />

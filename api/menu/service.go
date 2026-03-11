@@ -35,7 +35,7 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 		Select("DISTINCT m.*").
 		Joins("JOIN sys_role_menu rm ON ur.sys_role_id = rm.sys_role_id").
 		Joins("JOIN sys_menu m ON rm.sys_menu_id = m.id").
-		Where("ur.user_id = ? AND m.status = 1 AND m.type IN (0, 1)", userId).
+		Where("ur.sys_user_id = ? AND m.status = 1 AND m.type IN (0, 1)", userId).
 		Order("m.sort ASC").
 		Find(&menus).Error
 
