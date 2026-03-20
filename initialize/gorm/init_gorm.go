@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"gin-admin-server/api/dict"
 	"gin-admin-server/api/menu"
 	"gin-admin-server/api/role"
 	"gin-admin-server/api/user"
@@ -44,6 +45,8 @@ func RegisterTables() {
 		user.SysUser{},
 		menu.SysMenu{},
 		role.SysRole{},
+		dict.SysDictType{},
+		dict.SysDictData{},
 	)
 	if err != nil {
 		global.GNA_LOG.Error("注册数据表失败", zap.Error(err))

@@ -1,3 +1,4 @@
+// Package role 角色模块 API
 package role
 
 import (
@@ -7,6 +8,7 @@ import (
 	"gin-admin-server/model/page_info"
 )
 
+// SysRole 角色表
 type SysRole struct {
 	global.GNA_MODEL
 	Code        string `gorm:"column:code;unique;not null;comment:角色编码" json:"code" binding:"required" message:"角色编码不能为空"`
@@ -23,18 +25,21 @@ func (SysRole) TableName() string {
 	return "sys_role"
 }
 
+// RolePageRequest 角色分页查询请求
 type RolePageRequest struct {
 	page_info.PageInfo
-	Name   string
-	Code   string
-	Status *uint
+	Name   string `form:"name"`
+	Code   string `form:"code"`
+	Status *uint  `form:"status"`
 }
 
+// PowerResponse 角色权限树响应
 type PowerResponse struct {
 	AllPowerTree []*AllPowerTree `json:"allPowerTree"`
 	RolePower    []*uint         `json:"rolePower"`
 }
 
+// AllPowerTree 权限树节点
 type AllPowerTree struct {
 	Key      uint            `json:"key"`
 	Label    string          `json:"label"`
@@ -43,7 +48,8 @@ type AllPowerTree struct {
 	Sort     uint            `json:"sort"`
 }
 
+// SetPower 设置角色权限请求
 type SetPower struct {
-	RoleId uint
-	Powers []uint
+	RoleId uint   `json:"roleId" binding:"required"`
+	Powers []uint `json:"powers"`
 }

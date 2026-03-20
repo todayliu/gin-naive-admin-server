@@ -1,12 +1,15 @@
 package user
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
 	"gin-admin-server/utils"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -14,10 +17,17 @@ type _userService struct{}
 
 var UserService = new(_userService)
 
+// hashPasswordForStorage 对明文密码做 SHA256 哈希后存储，与登录校验逻辑一致（登录时前端发送 SHA256(明文)）
+func hashPasswordForStorage(plainPassword string) string {
+	hash := sha256.Sum256([]byte(plainPassword))
+	return hex.EncodeToString(hash[:])
+}
+
+// GetUserList 分页查询用户列表
 func (us *_userService) GetUserList(c *gin.Context) {
 	var list []SysUser
 	var userRequest UserPageRequest
-	err := c.ShouldBindJSON(&userRequest)
+	err := c.ShouldBindQuery(&userRequest)
 	if err != nil {
 		errMessage := validator.GetValidatorErrorMessage(err, userRequest)
 		response.FailWithMessage(errMessage, c)
@@ -50,6 +60,7 @@ func (us *_userService) GetUserList(c *gin.Context) {
 	}, c)
 }
 
+// QueryUser 查询用户详情（含角色ID列表）
 func (us *_userService) QueryUser(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -64,9 +75,45 @@ func (us *_userService) QueryUser(c *gin.Context) {
 		return
 	}
 
-	response.OkWithData(sysUser, c)
+	var roleIds []uint
+	_ = global.GNA_DB.Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
+
+	resp := map[string]interface{}{
+		"id":            sysUser.ID,
+		"createTime":    sysUser.CreateTime,
+		"updateTime":    sysUser.UpdateTime,
+		"account":       sysUser.Account,
+		"uName":         sysUser.UName,
+		"uNickname":     sysUser.UNickname,
+		"uMobile":       sysUser.UMobile,
+		"uEmail":        sysUser.UEmail,
+		"uAvatar":       sysUser.UAvatar,
+		"gender":        sysUser.Gender,
+		"status":        sysUser.Status,
+		"lastLoginTime": sysUser.LastLoginTime,
+		"roleIds":       roleIds,
+	}
+	response.OkWithData(resp, c)
 }
 
+// GetUserRoles 获取用户所属角色ID列表
+func (us *_userService) GetUserRoles(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		response.FailWithMessage("id 不能为空", c)
+		return
+	}
+	var roleIds []uint
+	result := global.GNA_DB.Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
+	if result.Error != nil {
+		global.GNA_LOG.Error("查询用户角色失败", zap.Error(result.Error))
+		response.FailWithMessage("查询用户角色失败", c)
+		return
+	}
+	response.OkWithData(map[string]interface{}{"roleIds": roleIds}, c)
+}
+
+// AddUser 新增用户
 func (us *_userService) AddUser(c *gin.Context) {
 	var req UserAddRequest
 	err := c.ShouldBindJSON(&req)
@@ -88,10 +135,11 @@ func (us *_userService) AddUser(c *gin.Context) {
 		return
 	}
 
+	hashedPassword := hashPasswordForStorage(req.Password)
 	user := SysUser{
 		UUID:      utils.GenerateUUID(),
 		Account:   req.Account,
-		Password:  req.Password,
+		Password:  hashedPassword,
 		UName:     req.UName,
 		UNickname: req.UNickname,
 		UMobile:   req.UMobile,
@@ -108,9 +156,20 @@ func (us *_userService) AddUser(c *gin.Context) {
 		return
 	}
 
+	// 设置用户角色关联
+	if len(req.RoleIds) > 0 {
+		for _, roleId := range req.RoleIds {
+			if err := global.GNA_DB.Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", user.ID, roleId).Error; err != nil {
+				global.GNA_LOG.Error("设置用户角色失败：" + err.Error())
+				break
+			}
+		}
+	}
+
 	response.Ok(c)
 }
 
+// EditUser 修改用户（密码可选，不传则不更新）
 func (us *_userService) EditUser(c *gin.Context) {
 	var req UserEditRequest
 	err := c.ShouldBindJSON(&req)
@@ -131,7 +190,7 @@ func (us *_userService) EditUser(c *gin.Context) {
 		"status":     req.Status,
 	}
 	if req.Password != "" {
-		updates["password"] = req.Password
+		updates["password"] = hashPasswordForStorage(req.Password)
 	}
 
 	err = global.GNA_DB.Model(&SysUser{}).Where("id = ?", req.ID).Updates(updates).Error
@@ -141,9 +200,26 @@ func (us *_userService) EditUser(c *gin.Context) {
 		return
 	}
 
+	// 更新用户角色关联
+	if req.RoleIds != nil {
+		if err := global.GNA_DB.Exec("DELETE FROM sys_user_role WHERE sys_user_id = ?", req.ID).Error; err != nil {
+			global.GNA_LOG.Error("清除用户角色失败：" + err.Error())
+			response.FailWithMessage("修改用户失败", c)
+			return
+		}
+		for _, roleId := range req.RoleIds {
+			if err := global.GNA_DB.Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", req.ID, roleId).Error; err != nil {
+				global.GNA_LOG.Error("设置用户角色失败：" + err.Error())
+				response.FailWithMessage("修改用户失败", c)
+				return
+			}
+		}
+	}
+
 	response.Ok(c)
 }
 
+// DeleteUser 删除用户（永久删除，同时删除用户角色关联）
 func (us *_userService) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {

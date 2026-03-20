@@ -6,12 +6,13 @@ type _menuRouter struct{}
 
 var MenuRouter = new(_menuRouter)
 
+// InitMenuRouter 初始化菜单模块路由
 func (l *_menuRouter) InitMenuRouter(Router *gin.RouterGroup) {
 	menuRouter := Router.Group("menu")
 	{
-		menuRouter.POST("router", MenuService.InitMenuList)
-		menuRouter.POST("list", MenuService.GetAllMenuList)
-		menuRouter.POST("edit", MenuService.UpdateMenu)
+		menuRouter.GET("router", MenuService.InitMenuList)
+		menuRouter.GET("list", MenuService.GetAllMenuList)
+		menuRouter.PUT("edit", MenuService.UpdateMenu)
 		menuRouter.DELETE("delete/:id", MenuService.DeleteMenu)
 	}
 }

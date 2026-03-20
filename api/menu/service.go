@@ -15,6 +15,8 @@ type _menuService struct{}
 
 var MenuService = new(_menuService)
 
+// InitMenuList 根据当前用户获取可访问的菜单路由（用于动态路由）
+// InitMenuList 根据当前用户获取可访问的菜单路由（用于动态路由）
 func (ms *_menuService) InitMenuList(c *gin.Context) {
 	userId := jwt_util.GetUserID(c)
 	routes, err := ms.GetMenuList(userId)
@@ -26,6 +28,7 @@ func (ms *_menuService) InitMenuList(c *gin.Context) {
 	response.OkWithData(routes, c)
 }
 
+// GetMenuList 根据用户ID获取其可访问的菜单树（用户→角色→菜单）
 func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 	var menus []*SysMenu
 
@@ -54,6 +57,7 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 	return routes, err
 }
 
+// BuildMenuTree 递归构建菜单树
 func (ms *_menuService) BuildMenuTree(menus []*SysMenu, parentID uint) []*SysMenu {
 	var tree []*SysMenu
 	for _, menu := range menus {
@@ -113,6 +117,7 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 	return route
 }
 
+// GetAllMenuList 获取全部菜单树（用于菜单管理）
 func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 	var menus []*SysMenu
 	err := global.GNA_DB.Order("sort ASC").Find(&menus).Error
@@ -127,6 +132,7 @@ func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 	response.OkWithData(menuTree, c)
 }
 
+// UpdateMenu 新增或修改菜单
 func (ms *_menuService) UpdateMenu(c *gin.Context) {
 	var menu SysMenu
 	err := c.ShouldBindJSON(&menu)
@@ -148,6 +154,7 @@ func (ms *_menuService) UpdateMenu(c *gin.Context) {
 	response.Ok(c)
 }
 
+// DeleteMenu 删除菜单（永久删除，同时删除角色菜单关联）
 func (ms *_menuService) DeleteMenu(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {

@@ -14,10 +14,11 @@ type _roleService struct{}
 
 var RoleService = new(_roleService)
 
+// GetRoleList 分页查询角色列表
 func (r *_roleService) GetRoleList(c *gin.Context) {
 	var list []SysRole
 	var roleRequest RolePageRequest
-	err := c.ShouldBindJSON(&roleRequest)
+	err := c.ShouldBindQuery(&roleRequest)
 	if err != nil {
 		errMessage := validator.GetValidatorErrorMessage(err, roleRequest)
 		response.FailWithMessage(errMessage, c)
@@ -53,6 +54,7 @@ func (r *_roleService) GetRoleList(c *gin.Context) {
 	}, c)
 }
 
+// AddRole 新增角色
 func (r *_roleService) AddRole(c *gin.Context) {
 	var roleReq SysRole
 	err := c.ShouldBindJSON(&roleReq)
@@ -72,6 +74,7 @@ func (r *_roleService) AddRole(c *gin.Context) {
 	response.Ok(c)
 }
 
+// QueryRole 查询角色详情
 func (r *_roleService) QueryRole(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -89,6 +92,7 @@ func (r *_roleService) QueryRole(c *gin.Context) {
 	response.OkWithData(sysRole, c)
 }
 
+// EditRole 修改角色
 func (r *_roleService) EditRole(c *gin.Context) {
 	var roleReq SysRole
 	err := c.ShouldBindJSON(&roleReq)
@@ -108,6 +112,7 @@ func (r *_roleService) EditRole(c *gin.Context) {
 	response.Ok(c)
 }
 
+// DeleteRole 删除角色（永久删除，同时删除用户角色、角色菜单关联）
 func (r *_roleService) DeleteRole(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -140,6 +145,7 @@ func (r *_roleService) DeleteRole(c *gin.Context) {
 	response.Ok(c)
 }
 
+// GetPowerTree 获取角色权限树（全部菜单树 + 角色已选菜单ID）
 func (r *_roleService) GetPowerTree(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -194,6 +200,7 @@ func (r *_roleService) buildPowersTree(menus []*menu.SysMenu, parentID uint) []*
 	return tree
 }
 
+// SetRolePower 设置角色权限（菜单ID列表）
 func (r *_roleService) SetRolePower(c *gin.Context) {
 	var setPowerReq SetPower
 	err := c.ShouldBindJSON(&setPowerReq)

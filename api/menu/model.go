@@ -1,10 +1,11 @@
+// Package menu 菜单模块 API
 package menu
 
 import (
 	"gin-admin-server/global"
 )
 
-// Menu 用户菜单表
+// SysMenu 菜单表（0:目录 1:菜单 2:按钮）
 type SysMenu struct {
 	global.GNA_MODEL
 	ParentId  uint    `gorm:"column:parent_id;not null;default:0;comment:父菜单ID" json:"parentId"`
@@ -36,8 +37,7 @@ func (SysMenu) TableName() string {
 	return "sys_menu"
 }
 
-// SysRole 用户角色
-
+// MenuResponse 菜单路由响应
 type MenuResponse struct {
 	Type      string         `json:"type"`
 	Path      string         `json:"path"`
@@ -51,6 +51,7 @@ type MenuResponse struct {
 	Children  []MenuResponse `json:"children"`
 }
 
+// MenuMeta 菜单元信息
 type MenuMeta struct {
 	Title                string `json:"title"`
 	Icon                 string `json:"icon"`
@@ -62,6 +63,7 @@ type MenuMeta struct {
 	LinkMode             string `json:"linkMode"`
 	NestedRouteRenderEnd bool   `json:"nestedRouteRenderEnd"`
 }
+// Redirect 重定向配置
 type Redirect struct {
 	Name string `json:"name"`
 }

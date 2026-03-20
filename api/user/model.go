@@ -1,3 +1,4 @@
+// Package user 用户模块 API
 package user
 
 import (
@@ -6,6 +7,7 @@ import (
 	"gin-admin-server/utils/time_util"
 )
 
+// SysUser 用户表
 type SysUser struct {
 	global.GNA_MODEL
 	UUID          string              `gorm:"column:uuid;type:varchar(100);unique;not null;comment:uuid" json:"-"`
@@ -25,6 +27,7 @@ func (SysUser) TableName() string {
 	return "sys_user"
 }
 
+// UserPageRequest 用户分页查询请求
 type UserPageRequest struct {
 	page_info.PageInfo
 }
@@ -40,6 +43,7 @@ type UserAddRequest struct {
 	UAvatar   string `json:"uAvatar"`
 	Gender    uint   `json:"gender"`
 	Status    uint   `json:"status"`
+	RoleIds   []uint `json:"roleIds"` // 用户角色ID列表
 }
 
 // UserEditRequest 编辑用户请求
@@ -53,5 +57,6 @@ type UserEditRequest struct {
 	UAvatar   string `json:"uAvatar"`
 	Gender    uint   `json:"gender"`
 	Status    uint   `json:"status"`
-	Password  string `json:"password"` // 可选，传则更新密码
+	Password  string `json:"password"`   // 可选，传则更新密码
+	RoleIds   []uint `json:"roleIds"`    // 用户角色ID列表
 }
