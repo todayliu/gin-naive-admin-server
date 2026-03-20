@@ -11,5 +11,8 @@ func (r *_userRouter) InitUserRouter(Router *gin.RouterGroup) {
 	{
 		userRouter.POST("list", UserService.GetUserList)
 		userRouter.GET("query/:id", UserService.QueryUser)
+		userRouter.POST("add", UserService.AddUser)
+		userRouter.POST("edit", UserService.EditUser)
+		userRouter.DELETE("delete/:id", UserService.DeleteUser)
 	}
 }

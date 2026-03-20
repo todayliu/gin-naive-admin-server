@@ -81,3 +81,8 @@ cors:
       allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
       expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
       allow-credentials: true # 布尔值
+    - allow-origin: "http://192.168.0.100:5173"
+      allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
+      allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      allow-credentials: true # 布尔值

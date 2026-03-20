@@ -1,26 +1,82 @@
 # 应用配置
-app:
+system:
   env: "release"
   debug: false
   port: 8080
   name: "gin-naive-admin-release"
 
+# 验证码配置
+captcha:
+  key-long: 4
+  img-width: 210
+  img-height: 70
+  noise-count: 80
+  show-line-options: 3
+  source: "23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ"
+
+# 路由配置
+router:
+  router-prefix: "/api"
+  path: "uploads/file"
+
 # 数据库配置
 database:
   host: "127.0.0.1"
-  port: 3306
+  port: "3306"
   user: "root"
   password: "123456"
-  name: "gin-naive-admin"
-  charset: "utf8mb4_unicode_ci"
-  timezone: "Asia/Shanghai"
+  db_name: "gin-naive-admin"
+  config: "charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Asia%2FShanghai"
   max_idle_conns: 10
   max_open_conns: 100
   conn_max_lifetime: 3600
   log-mode: ""
   log-zap: false
-  # 连接池配置
-  pool:
-    min_idle: 2
-    max_retries: 3
-    idle_timeout: 300
+  engine: "InnoDB"
+  prefix: ""
+  singular: false
+
+# Redis 配置
+redis:
+  db: 0
+  addr: "127.0.0.1:6379"
+  password: "123456"
+
+# Jwt 配置
+jwt:
+  secret-key: "your-secret-key-change-in-production"
+  expires-time: 86400      # 24小时过期
+  refresh-time: 604800     # 7天可刷新
+  buffer-time: 3600        # 缓冲时间
+  issuer: "gin-admin-server"
+
+# Zap 日志配置
+zap:
+  level: "info"
+  format: "console"
+  prefix: "[gin-naive-admin-release]"
+  director: "log"
+  show-line: true
+  encode-level: "LowercaseColorLevelEncoder"
+  stacktrace-key: "stacktrace"
+  log-in-console: true
+  local-time: true
+  max-age: 7
+  max-size: 100
+  max-backups: 30
+  compress: true
+
+# Cors 跨域配置
+cors:
+  mode: whitelist
+  whitelist:
+    - allow-origin: "http://127.0.0.1:5173"
+      allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
+      allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      allow-credentials: true
+    - allow-origin: "http://localhost:5173"
+      allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
+      allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      allow-credentials: true

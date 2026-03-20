@@ -41,22 +41,26 @@ func CorsByWhitelist() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
 		if origin == "" {
+			// 同源请求（如直接访问 API、健康检查）无 Origin 头，放行
 			host := c.Request.Host
-			local1 := fmt.Sprintf("127.0.0.1:%d", global.GNA_CONFIG.System.Port)
-			local2 := fmt.Sprintf("127.0.0.1:%d", global.GNA_CONFIG.System.Port)
-			if host == local1 || host == local2 {
-				c.Next()
-				return
-			} else {
-				c.AbortWithStatus(http.StatusForbidden)
-				return
+			allowedHosts := []string{
+				fmt.Sprintf("127.0.0.1:%d", global.GNA_CONFIG.System.Port),
+				fmt.Sprintf("localhost:%d", global.GNA_CONFIG.System.Port),
 			}
+			for _, h := range allowedHosts {
+				if host == h {
+					c.Next()
+					return
+				}
+			}
+			c.AbortWithStatus(http.StatusForbidden)
+			return
 		}
 
 		whitelist := checkCors(origin)
 
 		if whitelist == nil {
-			if c.Request.Method == "GET" && c.Request.URL.Path == "/health" {
+			if c.Request.Method == "GET" && (c.Request.URL.Path == "/api/health" || c.Request.URL.Path == "/health") {
 				c.Next()
 				return
 			}

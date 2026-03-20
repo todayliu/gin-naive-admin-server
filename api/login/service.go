@@ -78,10 +78,23 @@ func (ls *_LoginService) Login(c *gin.Context) {
 	}
 	global.GNA_REDIS.Set(c.Request.Context(), "login:nonce:"+loginRequest.Username+":"+loginRequest.Nonce, loginRequest.Nonce, 5*time.Minute)
 
+	// 先校验验证码，减少暴力破解风险
+	smsCode, err := global.GNA_REDIS.Get(c.Request.Context(), "CAPTCHA_"+loginRequest.CaptchaId).Result()
+	if err != nil || strings.ToLower(smsCode) != strings.ToLower(loginRequest.Captcha) {
+		global.GNA_LOG.Error("验证码错误")
+		response.FailWithMessage("验证码错误，请重试", c)
+		return
+	}
+
 	var userInfo user.SysUser
 	err = global.GNA_DB.Where("account = ?", loginRequest.Username).First(&userInfo).Error
+	if err != nil {
+		global.GNA_LOG.Error("用户不存在或查询失败", zap.Error(err))
+		response.FailWithMessage("用户名或密码错误，请重试", c)
+		return
+	}
 
-	//判断密码
+	// 判断密码
 	newSalt := global.GNA_CONFIG.System.Name + loginRequest.Salt
 	combined := fmt.Sprintf("%s:%s:%d", userInfo.Password, newSalt, loginRequest.Timestamp)
 	hash := sha256.Sum256([]byte(combined))
@@ -89,15 +102,7 @@ func (ls *_LoginService) Login(c *gin.Context) {
 
 	if expectedHash != loginRequest.Password {
 		global.GNA_LOG.Error("密码错误")
-		response.FailWithMessage("密码错误，请重试", c)
-		return
-	}
-
-	//判断验证码
-	smsCode, err := global.GNA_REDIS.Get(c.Request.Context(), "CAPTCHA_"+loginRequest.CaptchaId).Result()
-	if err != nil || strings.ToLower(smsCode) != strings.ToLower(loginRequest.Captcha) {
-		global.GNA_LOG.Error("验证码错误")
-		response.FailWithMessage("验证码错误，请重试", c)
+		response.FailWithMessage("用户名或密码错误，请重试", c)
 		return
 	}
 

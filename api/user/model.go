@@ -28,3 +28,30 @@ func (SysUser) TableName() string {
 type UserPageRequest struct {
 	page_info.PageInfo
 }
+
+// UserAddRequest 新增用户请求
+type UserAddRequest struct {
+	Account   string `json:"account" binding:"required" message:"用户账号不能为空"`
+	Password  string `json:"password" binding:"required,min=6" message:"密码不能为空且至少6位"`
+	UName     string `json:"uName" binding:"required" message:"用户名称不能为空"`
+	UNickname string `json:"uNickname"`
+	UMobile   string `json:"uMobile" binding:"required" message:"手机号不能为空"`
+	UEmail    string `json:"uEmail"`
+	UAvatar   string `json:"uAvatar"`
+	Gender    uint   `json:"gender"`
+	Status    uint   `json:"status"`
+}
+
+// UserEditRequest 编辑用户请求
+type UserEditRequest struct {
+	ID        uint   `json:"id" binding:"required" message:"用户ID不能为空"`
+	Account   string `json:"account" binding:"required" message:"用户账号不能为空"`
+	UName     string `json:"uName" binding:"required" message:"用户名称不能为空"`
+	UNickname string `json:"uNickname"`
+	UMobile   string `json:"uMobile" binding:"required" message:"手机号不能为空"`
+	UEmail    string `json:"uEmail"`
+	UAvatar   string `json:"uAvatar"`
+	Gender    uint   `json:"gender"`
+	Status    uint   `json:"status"`
+	Password  string `json:"password"` // 可选，传则更新密码
+}
