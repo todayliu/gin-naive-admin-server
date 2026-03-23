@@ -20,11 +20,22 @@ type SysUser struct {
 	UAvatar       string              `gorm:"column:u_avatar;comment:用户头像" json:"uAvatar"`
 	Gender        uint                `gorm:"column:gender;comment:用户性别" json:"gender"`
 	Status        uint                `gorm:"column:status;comment:用户状态" json:"status"`
+	DepartmentId  uint                `gorm:"column:department_id;default:0;comment:所属部门ID" json:"departmentId"`
 	LastLoginTime time_util.LocalTime `gorm:"column:last_login_time;comment:账号最后一次登录时间" json:"lastLoginTime"`
 }
 
 func (SysUser) TableName() string {
 	return "sys_user"
+}
+
+// SysUserDepartment 用户-部门关联表（多对多）
+type SysUserDepartment struct {
+	SysUserID       uint `gorm:"column:sys_user_id;primaryKey" json:"-"`
+	SysDepartmentID uint `gorm:"column:sys_department_id;primaryKey" json:"-"`
+}
+
+func (SysUserDepartment) TableName() string {
+	return "sys_user_department"
 }
 
 // UserPageRequest 用户分页查询请求
@@ -41,9 +52,11 @@ type UserAddRequest struct {
 	UMobile   string `json:"uMobile" binding:"required" message:"手机号不能为空"`
 	UEmail    string `json:"uEmail"`
 	UAvatar   string `json:"uAvatar"`
-	Gender    uint   `json:"gender"`
-	Status    uint   `json:"status"`
-	RoleIds   []uint `json:"roleIds"` // 用户角色ID列表
+	Gender       uint   `json:"gender"`
+	Status       uint   `json:"status"`
+	DepartmentId  uint   `json:"departmentId"`  // 所属部门ID（兼容，取第一个）
+	DepartmentIds []uint `json:"departmentIds"` // 所属部门ID列表（多选）
+	RoleIds       []uint `json:"roleIds"`       // 用户角色ID列表
 }
 
 // UserEditRequest 编辑用户请求
@@ -55,8 +68,10 @@ type UserEditRequest struct {
 	UMobile   string `json:"uMobile" binding:"required" message:"手机号不能为空"`
 	UEmail    string `json:"uEmail"`
 	UAvatar   string `json:"uAvatar"`
-	Gender    uint   `json:"gender"`
-	Status    uint   `json:"status"`
-	Password  string `json:"password"`   // 可选，传则更新密码
-	RoleIds   []uint `json:"roleIds"`    // 用户角色ID列表
+	Gender       uint   `json:"gender"`
+	Status       uint   `json:"status"`
+	DepartmentId  uint   `json:"departmentId"`  // 所属部门ID（兼容，取第一个）
+	DepartmentIds []uint `json:"departmentIds"` // 所属部门ID列表（多选）
+	Password      string `json:"password"`      // 可选，传则更新密码
+	RoleIds       []uint `json:"roleIds"`       // 用户角色ID列表
 }

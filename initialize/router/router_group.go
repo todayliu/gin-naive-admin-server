@@ -1,6 +1,7 @@
 package router
 
 import (
+	"gin-admin-server/api/department"
 	"gin-admin-server/api/dict"
 	"gin-admin-server/api/login"
 	"gin-admin-server/api/menu"
@@ -41,6 +42,7 @@ func (r *_routerGroup) SetupPublicRouters(PublicGroup *gin.RouterGroup) {
 }
 
 func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {
+	department.DepartmentRouter.InitDepartmentRouter(PrivateGroup)
 	dict.DictRouter.InitDictRouter(PrivateGroup)
 	menu.MenuRouter.InitMenuRouter(PrivateGroup)
 	role.RoleRouter.InitRoleRouter(PrivateGroup)

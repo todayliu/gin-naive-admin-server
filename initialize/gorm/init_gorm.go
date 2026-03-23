@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"gin-admin-server/api/department"
 	"gin-admin-server/api/dict"
 	"gin-admin-server/api/menu"
 	"gin-admin-server/api/role"
@@ -43,8 +44,10 @@ func RegisterTables() {
 	err := db.AutoMigrate(
 		// 系统模块表
 		user.SysUser{},
+		user.SysUserDepartment{},
 		menu.SysMenu{},
 		role.SysRole{},
+		department.SysDepartment{},
 		dict.SysDictType{},
 		dict.SysDictData{},
 	)

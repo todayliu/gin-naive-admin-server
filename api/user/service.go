@@ -78,6 +78,12 @@ func (us *_userService) QueryUser(c *gin.Context) {
 	var roleIds []uint
 	_ = global.GNA_DB.Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
 
+	var departmentIds []uint
+	_ = global.GNA_DB.Model(&SysUserDepartment{}).Where("sys_user_id = ?", id).Order("sys_department_id").Pluck("sys_department_id", &departmentIds)
+	if len(departmentIds) == 0 && sysUser.DepartmentId > 0 {
+		departmentIds = []uint{sysUser.DepartmentId}
+	}
+
 	resp := map[string]interface{}{
 		"id":            sysUser.ID,
 		"createTime":    sysUser.CreateTime,
@@ -90,6 +96,8 @@ func (us *_userService) QueryUser(c *gin.Context) {
 		"uAvatar":       sysUser.UAvatar,
 		"gender":        sysUser.Gender,
 		"status":        sysUser.Status,
+		"departmentId":  sysUser.DepartmentId,
+		"departmentIds": departmentIds,
 		"lastLoginTime": sysUser.LastLoginTime,
 		"roleIds":       roleIds,
 	}
@@ -135,18 +143,28 @@ func (us *_userService) AddUser(c *gin.Context) {
 		return
 	}
 
+	deptIds := req.DepartmentIds
+	if len(deptIds) == 0 && req.DepartmentId > 0 {
+		deptIds = []uint{req.DepartmentId}
+	}
+	primaryDeptId := uint(0)
+	if len(deptIds) > 0 {
+		primaryDeptId = deptIds[0]
+	}
+
 	hashedPassword := hashPasswordForStorage(req.Password)
 	user := SysUser{
-		UUID:      utils.GenerateUUID(),
-		Account:   req.Account,
-		Password:  hashedPassword,
-		UName:     req.UName,
-		UNickname: req.UNickname,
-		UMobile:   req.UMobile,
-		UEmail:    req.UEmail,
-		UAvatar:   req.UAvatar,
-		Gender:    req.Gender,
-		Status:    req.Status,
+		UUID:         utils.GenerateUUID(),
+		Account:      req.Account,
+		Password:     hashedPassword,
+		UName:        req.UName,
+		UNickname:    req.UNickname,
+		UMobile:      req.UMobile,
+		UEmail:       req.UEmail,
+		UAvatar:      req.UAvatar,
+		Gender:       req.Gender,
+		Status:       req.Status,
+		DepartmentId: primaryDeptId,
 	}
 
 	err = global.GNA_DB.Create(&user).Error
@@ -154,6 +172,16 @@ func (us *_userService) AddUser(c *gin.Context) {
 		global.GNA_LOG.Error("添加用户失败：" + err.Error())
 		response.FailWithMessage("添加用户失败", c)
 		return
+	}
+
+	// 设置用户部门关联
+	if len(deptIds) > 0 {
+		for _, deptId := range deptIds {
+			if err := global.GNA_DB.Create(&SysUserDepartment{SysUserID: user.ID, SysDepartmentID: deptId}).Error; err != nil {
+				global.GNA_LOG.Error("设置用户部门失败：" + err.Error())
+				break
+			}
+		}
 	}
 
 	// 设置用户角色关联
@@ -179,15 +207,25 @@ func (us *_userService) EditUser(c *gin.Context) {
 		return
 	}
 
+	deptIds := req.DepartmentIds
+	if len(deptIds) == 0 && req.DepartmentId > 0 {
+		deptIds = []uint{req.DepartmentId}
+	}
+	primaryDeptId := uint(0)
+	if len(deptIds) > 0 {
+		primaryDeptId = deptIds[0]
+	}
+
 	updates := map[string]interface{}{
-		"account":    req.Account,
-		"u_name":     req.UName,
-		"u_nickname": req.UNickname,
-		"u_mobile":   req.UMobile,
-		"u_email":    req.UEmail,
-		"u_avatar":   req.UAvatar,
-		"gender":     req.Gender,
-		"status":     req.Status,
+		"account":       req.Account,
+		"u_name":        req.UName,
+		"u_nickname":    req.UNickname,
+		"u_mobile":      req.UMobile,
+		"u_email":       req.UEmail,
+		"u_avatar":      req.UAvatar,
+		"gender":        req.Gender,
+		"status":        req.Status,
+		"department_id": primaryDeptId,
 	}
 	if req.Password != "" {
 		updates["password"] = hashPasswordForStorage(req.Password)
@@ -198,6 +236,19 @@ func (us *_userService) EditUser(c *gin.Context) {
 		global.GNA_LOG.Error("修改用户失败：" + err.Error())
 		response.FailWithMessage("修改用户失败", c)
 		return
+	}
+
+	// 更新用户部门关联
+	if req.DepartmentIds != nil || req.DepartmentId > 0 {
+		if err := global.GNA_DB.Where("sys_user_id = ?", req.ID).Delete(&SysUserDepartment{}).Error; err != nil {
+			global.GNA_LOG.Error("清除用户部门失败：" + err.Error())
+		}
+		for _, deptId := range deptIds {
+			if err := global.GNA_DB.Create(&SysUserDepartment{SysUserID: req.ID, SysDepartmentID: deptId}).Error; err != nil {
+				global.GNA_LOG.Error("设置用户部门失败：" + err.Error())
+				break
+			}
+		}
 	}
 
 	// 更新用户角色关联
@@ -229,6 +280,9 @@ func (us *_userService) DeleteUser(c *gin.Context) {
 
 	err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Exec("DELETE FROM sys_user_role WHERE sys_user_id = ?", id).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("sys_user_id = ?", id).Delete(&SysUserDepartment{}).Error; err != nil {
 			return err
 		}
 		if err := tx.Unscoped().Where("id = ?", id).Delete(&SysUser{}).Error; err != nil {
