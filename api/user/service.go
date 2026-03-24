@@ -84,6 +84,12 @@ func (us *_userService) QueryUser(c *gin.Context) {
 		departmentIds = []uint{sysUser.DepartmentId}
 	}
 
+	var positionIds []uint
+	_ = global.GNA_DB.Model(&SysUserJobLevel{}).Where("sys_user_id = ?", id).Order("sys_job_level_id").Pluck("sys_job_level_id", &positionIds)
+	if len(positionIds) == 0 && sysUser.JobLevelID > 0 {
+		positionIds = []uint{sysUser.JobLevelID}
+	}
+
 	resp := map[string]interface{}{
 		"id":            sysUser.ID,
 		"createTime":    sysUser.CreateTime,
@@ -98,6 +104,7 @@ func (us *_userService) QueryUser(c *gin.Context) {
 		"status":        sysUser.Status,
 		"departmentId":  sysUser.DepartmentId,
 		"departmentIds": departmentIds,
+		"positionIds":   positionIds,
 		"lastLoginTime": sysUser.LastLoginTime,
 		"roleIds":       roleIds,
 	}
@@ -152,6 +159,11 @@ func (us *_userService) AddUser(c *gin.Context) {
 		primaryDeptId = deptIds[0]
 	}
 
+	primaryJobLevel := uint(0)
+	if len(req.PositionIDs) > 0 {
+		primaryJobLevel = req.PositionIDs[0]
+	}
+
 	hashedPassword := hashPasswordForStorage(req.Password)
 	user := SysUser{
 		UUID:         utils.GenerateUUID(),
@@ -165,6 +177,7 @@ func (us *_userService) AddUser(c *gin.Context) {
 		Gender:       req.Gender,
 		Status:       req.Status,
 		DepartmentId: primaryDeptId,
+		JobLevelID:   primaryJobLevel,
 	}
 
 	err = global.GNA_DB.Create(&user).Error
@@ -189,6 +202,16 @@ func (us *_userService) AddUser(c *gin.Context) {
 		for _, roleId := range req.RoleIds {
 			if err := global.GNA_DB.Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", user.ID, roleId).Error; err != nil {
 				global.GNA_LOG.Error("设置用户角色失败：" + err.Error())
+				break
+			}
+		}
+	}
+
+	// 设置用户职务关联（多选）
+	if len(req.PositionIDs) > 0 {
+		for _, jlID := range req.PositionIDs {
+			if err := global.GNA_DB.Create(&SysUserJobLevel{SysUserID: user.ID, SysJobLevelID: jlID}).Error; err != nil {
+				global.GNA_LOG.Error("设置用户职务失败：" + err.Error())
 				break
 			}
 		}
@@ -226,6 +249,13 @@ func (us *_userService) EditUser(c *gin.Context) {
 		"gender":        req.Gender,
 		"status":        req.Status,
 		"department_id": primaryDeptId,
+	}
+	if req.PositionIDs != nil {
+		jl := uint(0)
+		if len(req.PositionIDs) > 0 {
+			jl = req.PositionIDs[0]
+		}
+		updates["job_level_id"] = jl
 	}
 	if req.Password != "" {
 		updates["password"] = hashPasswordForStorage(req.Password)
@@ -267,6 +297,19 @@ func (us *_userService) EditUser(c *gin.Context) {
 		}
 	}
 
+	// 更新用户职务关联（多选）
+	if req.PositionIDs != nil {
+		if err := global.GNA_DB.Where("sys_user_id = ?", req.ID).Delete(&SysUserJobLevel{}).Error; err != nil {
+			global.GNA_LOG.Error("清除用户职务失败：" + err.Error())
+		}
+		for _, jlID := range req.PositionIDs {
+			if err := global.GNA_DB.Create(&SysUserJobLevel{SysUserID: req.ID, SysJobLevelID: jlID}).Error; err != nil {
+				global.GNA_LOG.Error("设置用户职务失败：" + err.Error())
+				break
+			}
+		}
+	}
+
 	response.Ok(c)
 }
 
@@ -283,6 +326,9 @@ func (us *_userService) DeleteUser(c *gin.Context) {
 			return err
 		}
 		if err := tx.Where("sys_user_id = ?", id).Delete(&SysUserDepartment{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("sys_user_id = ?", id).Delete(&SysUserJobLevel{}).Error; err != nil {
 			return err
 		}
 		if err := tx.Unscoped().Where("id = ?", id).Delete(&SysUser{}).Error; err != nil {

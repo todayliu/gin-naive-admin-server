@@ -21,6 +21,8 @@ type SysUser struct {
 	Gender        uint                `gorm:"column:gender;comment:用户性别" json:"gender"`
 	Status        uint                `gorm:"column:status;comment:用户状态" json:"status"`
 	DepartmentId  uint                `gorm:"column:department_id;default:0;comment:所属部门ID" json:"departmentId"`
+	// JobLevelID 仅同步「多职务」中的第一个 id，兼容历史单列；对外以 sys_user_job_level 为准
+	JobLevelID    uint                `gorm:"column:job_level_id;default:0;comment:职务级别ID(冗余首项)" json:"-"`
 	LastLoginTime time_util.LocalTime `gorm:"column:last_login_time;comment:账号最后一次登录时间" json:"lastLoginTime"`
 }
 
@@ -36,6 +38,16 @@ type SysUserDepartment struct {
 
 func (SysUserDepartment) TableName() string {
 	return "sys_user_department"
+}
+
+// SysUserJobLevel 用户-职务级别关联表（多对多）
+type SysUserJobLevel struct {
+	SysUserID     uint `gorm:"column:sys_user_id;primaryKey" json:"-"`
+	SysJobLevelID uint `gorm:"column:sys_job_level_id;primaryKey" json:"-"`
+}
+
+func (SysUserJobLevel) TableName() string {
+	return "sys_user_job_level"
 }
 
 // UserPageRequest 用户分页查询请求
@@ -57,6 +69,7 @@ type UserAddRequest struct {
 	DepartmentId  uint   `json:"departmentId"`  // 所属部门ID（兼容，取第一个）
 	DepartmentIds []uint `json:"departmentIds"` // 所属部门ID列表（多选）
 	RoleIds       []uint `json:"roleIds"`       // 用户角色ID列表
+	PositionIDs   []uint `json:"positionIds"`   // 职务级别ID列表（多选）
 }
 
 // UserEditRequest 编辑用户请求
@@ -74,4 +87,5 @@ type UserEditRequest struct {
 	DepartmentIds []uint `json:"departmentIds"` // 所属部门ID列表（多选）
 	Password      string `json:"password"`      // 可选，传则更新密码
 	RoleIds       []uint `json:"roleIds"`       // 用户角色ID列表
+	PositionIDs   []uint `json:"positionIds"`   // 职务级别ID列表（多选）
 }
