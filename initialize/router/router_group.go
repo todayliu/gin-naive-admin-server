@@ -47,6 +47,7 @@ func (r *_routerGroup) SetRoutesGroup(Router *gin.Engine) {
 
 func (r *_routerGroup) SetupPublicRouters(PublicGroup *gin.RouterGroup) {
 	login.LoginRouter.InitLoginRouter(PublicGroup)
+	sysconfig.SysConfigRouter.InitPublicRouter(PublicGroup)
 }
 
 func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {

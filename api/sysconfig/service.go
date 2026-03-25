@@ -21,6 +21,25 @@ type configEditRequest struct {
 	Remark      string `json:"remark"`
 }
 
+// SiteDisplay 匿名可访问的站点展示信息（仅白名单配置键，供登录页与壳层标题使用）
+func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
+	keys := []string{"site.title", "site.copyright"}
+	var rows []SysConfig
+	if err := global.GNA_DB.Where("config_key IN ?", keys).Find(&rows).Error; err != nil {
+		global.GNA_LOG.Error("读取站点展示配置失败", zap.Error(err))
+		response.FailWithMessage("读取失败", c)
+		return
+	}
+	m := make(map[string]string, len(rows))
+	for i := range rows {
+		m[rows[i].ConfigKey] = rows[i].ConfigValue
+	}
+	response.OkWithData(gin.H{
+		"title":     m["site.title"],
+		"copyright": m["site.copyright"],
+	}, c)
+}
+
 func (s *_sysConfigService) List(c *gin.Context) {
 	var list []SysConfig
 	if err := global.GNA_DB.Order("config_key asc").Find(&list).Error; err != nil {
