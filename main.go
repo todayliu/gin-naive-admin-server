@@ -8,6 +8,8 @@ import (
 	"gin-admin-server/initialize/server"
 	"gin-admin-server/initialize/viper"
 	"gin-admin-server/initialize/zap_log"
+	"gin-admin-server/api/sysconfig"
+	"gin-admin-server/permission"
 	"gin-admin-server/utils/validator"
 
 	"go.uber.org/zap"
@@ -29,6 +31,9 @@ func main() {
 	global.GNA_DB = gorm.InitGorm()
 	if global.GNA_DB != nil {
 		gorm.RegisterTables() // 初始化表
+		permission.SeedMenuButtonPermsIfNeeded(global.GNA_DB)
+		permission.ReparentAPIPermissionButtons(global.GNA_DB)
+		sysconfig.SeedDefaults(global.GNA_DB)
 		db, _ := global.GNA_DB.DB()
 		defer func(db *sql.DB) {
 			err := db.Close()

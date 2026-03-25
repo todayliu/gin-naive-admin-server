@@ -22,6 +22,9 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	UserInfo user.SysUser `json:"userInfo"`
-	Token    string       `json:"token"`
+	UserInfo   user.SysUser `json:"userInfo"`
+	Token      string       `json:"token"`
+	Roles      []string     `json:"roles"`
+	Codes      []string     `json:"codes"`
+	ExpiresIn  int64        `json:"expiresIn"` // 秒，与 Jwt 配置一致
 }

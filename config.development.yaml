@@ -19,6 +19,13 @@ router:
   router-prefix: "/api"
   path: "uploads/file"
 
+# 安全：接口权限与数据范围
+security:
+  super-role-codes:
+    - admin
+  relax-api-auth: false
+  data-scope-enabled: true
+
 # 数据库配置
 database:
   host: "127.0.0.1"
@@ -74,15 +81,15 @@ cors:
     - allow-origin: "http://127.0.0.1:5173"
       allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
       allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
-      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time, New-Access-Token"
       allow-credentials: true # 布尔值
     - allow-origin: "http://localhost:5173"
       allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
       allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
-      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time, New-Access-Token"
       allow-credentials: true # 布尔值
     - allow-origin: "http://192.168.0.100:5173"
       allow-headers: "Content-Type,AccessToken,X-CSRF-Token, Authorization,UUID"
       allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
-      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time"
+      expose-headers: "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type, Refresh-Token, Refresh-Token-Expires-Time, New-Access-Token"
       allow-credentials: true # 布尔值

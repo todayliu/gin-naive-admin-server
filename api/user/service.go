@@ -5,8 +5,12 @@ import (
 	"encoding/hex"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/permission"
 	"gin-admin-server/utils"
+	"gin-admin-server/utils/jwt_util"
 	"gin-admin-server/utils/validator"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -34,6 +38,41 @@ func (us *_userService) GetUserList(c *gin.Context) {
 		return
 	}
 	db := global.GNA_DB.Model(&SysUser{})
+
+	if userRequest.Username != "" {
+		db = db.Where("account LIKE ?", "%"+strings.TrimSpace(userRequest.Username)+"%")
+	}
+	if userRequest.Nickname != "" {
+		db = db.Where("u_nickname LIKE ?", "%"+strings.TrimSpace(userRequest.Nickname)+"%")
+	}
+	if userRequest.Gender != "" {
+		if g, err := strconv.ParseUint(userRequest.Gender, 10, 32); err == nil {
+			db = db.Where("gender = ?", uint(g))
+		}
+	}
+	if userRequest.Status != "" {
+		if s, err := strconv.ParseUint(userRequest.Status, 10, 32); err == nil {
+			db = db.Where("status = ?", uint(s))
+		}
+	}
+	if userRequest.DepartmentID != "" {
+		if d, err := strconv.ParseUint(userRequest.DepartmentID, 10, 32); err == nil && d > 0 {
+			did := uint(d)
+			db = db.Where("department_id = ? OR EXISTS (SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id = ?)", did, did)
+		}
+	}
+
+	uid := jwt_util.GetUserID(c)
+	if global.GNA_CONFIG.Security.DataScopeEnabled && uid > 0 && !permission.IsSuperUser(uid) {
+		scope := ScopedDepartmentIDs(uid)
+		if len(scope) == 0 {
+			db = db.Where("sys_user.id = ?", uid)
+		} else {
+			db = db.Where(`sys_user.id = ? OR sys_user.department_id IN ? OR EXISTS (
+				SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id IN ?
+			)`, uid, scope, scope)
+		}
+	}
 
 	var total int64
 

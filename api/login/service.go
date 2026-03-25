@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"gin-admin-server/api/log"
 	"gin-admin-server/api/user"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
@@ -82,6 +83,7 @@ func (ls *_LoginService) Login(c *gin.Context) {
 	smsCode, err := global.GNA_REDIS.Get(c.Request.Context(), "CAPTCHA_"+loginRequest.CaptchaId).Result()
 	if err != nil || strings.ToLower(smsCode) != strings.ToLower(loginRequest.Captcha) {
 		global.GNA_LOG.Error("验证码错误")
+		log.SaveLoginLogAsync(0, loginRequest.Username, c.ClientIP(), 2, "验证码错误")
 		response.FailWithMessage("验证码错误，请重试", c)
 		return
 	}
@@ -90,6 +92,7 @@ func (ls *_LoginService) Login(c *gin.Context) {
 	err = global.GNA_DB.Where("account = ?", loginRequest.Username).First(&userInfo).Error
 	if err != nil {
 		global.GNA_LOG.Error("用户不存在或查询失败", zap.Error(err))
+		log.SaveLoginLogAsync(0, loginRequest.Username, c.ClientIP(), 2, "用户不存在")
 		response.FailWithMessage("用户名或密码错误，请重试", c)
 		return
 	}
@@ -102,6 +105,7 @@ func (ls *_LoginService) Login(c *gin.Context) {
 
 	if expectedHash != loginRequest.Password {
 		global.GNA_LOG.Error("密码错误")
+		log.SaveLoginLogAsync(userInfo.ID, userInfo.Account, c.ClientIP(), 2, "密码错误")
 		response.FailWithMessage("用户名或密码错误，请重试", c)
 		return
 	}
@@ -126,8 +130,16 @@ func (ls *_LoginService) CreateToken(c *gin.Context, userInfo user.SysUser) {
 		return
 	}
 
+	_ = global.GNA_DB.Model(&user.SysUser{}).Where("id = ?", userInfo.ID).Update("last_login_time", time.Now()).Error
+	log.SaveLoginLogAsync(userInfo.ID, userInfo.Account, c.ClientIP(), 1, "登录成功")
+
+	roles := loadUserRoleCodes(userInfo.ID)
+
 	response.OkWithDetailed(LoginResponse{
-		UserInfo: userInfo,
-		Token:    token,
+		UserInfo:  userInfo,
+		Token:     token,
+		Roles:     roles,
+		Codes:     nil,
+		ExpiresIn: global.GNA_CONFIG.Jwt.ExpiresTime,
 	}, "登录成功", c)
 }

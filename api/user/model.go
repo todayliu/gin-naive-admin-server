@@ -53,6 +53,11 @@ func (SysUserJobLevel) TableName() string {
 // UserPageRequest 用户分页查询请求
 type UserPageRequest struct {
 	page_info.PageInfo
+	Username     string `form:"username"`
+	Nickname     string `form:"nickname"`
+	Gender       string `form:"gender"`
+	Status       string `form:"status"`
+	DepartmentID string `form:"departmentId"`
 }
 
 // UserAddRequest 新增用户请求
