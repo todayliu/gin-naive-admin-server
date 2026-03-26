@@ -1,13 +1,17 @@
 package menu
 
 import (
+	"fmt"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
 	"gin-admin-server/utils/jwt_util"
 	"gin-admin-server/utils/validator"
 	"sort"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -132,7 +136,56 @@ func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 	response.OkWithData(menuTree, c)
 }
 
-// UpdateMenu 新增或修改菜单
+// fillMenuNameIfEmpty 路由 name 唯一；未填时由 perms 或标题生成，避免 Create 失败
+func (ms *_menuService) fillMenuNameIfEmpty(menu *SysMenu) {
+	if strings.TrimSpace(menu.Name) != "" {
+		return
+	}
+	var base string
+	if menu.Perms != nil && strings.TrimSpace(*menu.Perms) != "" {
+		base = strings.ReplaceAll(strings.TrimSpace(*menu.Perms), ":", "_")
+		base = strings.ReplaceAll(base, "/", "_")
+	} else if strings.TrimSpace(menu.Title) != "" {
+		base = strings.ReplaceAll(strings.TrimSpace(menu.Title), " ", "_")
+	} else {
+		base = "menu"
+	}
+	if len(base) > 100 {
+		base = base[:100]
+	}
+	for i := 0; i < 200; i++ {
+		candidate := base
+		if i > 0 {
+			candidate = fmt.Sprintf("%s_%d", base, i)
+		}
+		var cnt int64
+		global.GNA_DB.Model(&SysMenu{}).Where("name = ?", candidate).Count(&cnt)
+		if cnt == 0 {
+			menu.Name = candidate
+			return
+		}
+	}
+	menu.Name = fmt.Sprintf("%s_%d", base, time.Now().UnixMilli())
+}
+
+// AddMenu 新增菜单（不含 id）
+func (ms *_menuService) AddMenu(c *gin.Context) {
+	var menu SysMenu
+	if err := c.ShouldBindJSON(&menu); err != nil {
+		response.FailWithMessage(validator.GetValidatorErrorMessage(err, menu), c)
+		return
+	}
+	menu.ID = 0
+	ms.fillMenuNameIfEmpty(&menu)
+	if err := global.GNA_DB.Create(&menu).Error; err != nil {
+		global.GNA_LOG.Error("新增菜单失败", zap.Error(err))
+		response.FailWithMessage("新增菜单失败", c)
+		return
+	}
+	response.Ok(c)
+}
+
+// UpdateMenu 修改菜单（必须带 id）
 func (ms *_menuService) UpdateMenu(c *gin.Context) {
 	var menu SysMenu
 	err := c.ShouldBindJSON(&menu)
@@ -141,6 +194,10 @@ func (ms *_menuService) UpdateMenu(c *gin.Context) {
 		errMessage := validator.GetValidatorErrorMessage(err, menu)
 		global.GNA_LOG.Error(errMessage)
 		response.FailWithMessage(errMessage, c)
+		return
+	}
+	if menu.ID == 0 {
+		response.FailWithMessage("缺少菜单 id，请使用 POST /api/menu/add 新增", c)
 		return
 	}
 	err = global.GNA_DB.Save(&menu).Error

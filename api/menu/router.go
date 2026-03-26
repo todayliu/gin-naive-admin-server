@@ -13,6 +13,7 @@ func (l *_menuRouter) InitMenuRouter(Router *gin.RouterGroup) {
 		menuRouter.GET("router", MenuService.InitMenuList)
 		menuRouter.GET("list", MenuService.GetAllMenuList)
 		menuRouter.PUT("edit", MenuService.UpdateMenu)
+		menuRouter.POST("add", MenuService.AddMenu)
 		menuRouter.DELETE("delete/:id", MenuService.DeleteMenu)
 	}
 }

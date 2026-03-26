@@ -54,6 +54,7 @@ func buildRoutePermMap(prefix string) map[string]string {
 	put("POST", "/role/setRolePower", "system:role:power")
 
 	// 菜单（router 由中间件白名单放行，此处仅管理端菜单维护）
+	put("POST", "/menu/add", "system:menu:add")
 	put("PUT", "/menu/edit", "system:menu:edit")
 	put("DELETE", "/menu/delete/:id", "system:menu:delete")
 
@@ -79,6 +80,7 @@ func buildRoutePermMap(prefix string) map[string]string {
 	// 日志（列表 GET 不校验权限码）
 
 	// 参数配置
+	put("POST", "/config/add", "system:config:add")
 	put("PUT", "/config/edit", "system:config:edit")
 
 	// 仪表盘

@@ -25,7 +25,7 @@ INSERT INTO sys_menu (
   parent_id, type, path, name, component, title, title_i18n_key, icon, sort, status,
   hide_in_menu, fixed_in_tabs, keep_alive, nested_route_render_end
 )
-SELECT @parent, '1', 'sys-config', 'SysConfig', 'monitor/sys-config/index.vue', '参数配置', 'routes.sysConfig', 'mdi:cog-outline', 82, 1,
+SELECT @parent, '1', 'sys-config', 'SysConfig', 'system/sys-config/index.vue', '参数配置', 'routes.sysConfig', 'mdi:cog-outline', 82, 1,
   0, 0, 1, 0
 WHERE @parent IS NOT NULL
   AND NOT EXISTS (SELECT 1 FROM sys_menu WHERE name = 'SysConfig' AND delete_time IS NULL);
@@ -39,4 +39,4 @@ WHERE r.code = 'admin' AND r.delete_time IS NULL;
 -- 若此前已插入旧路径，可执行：
 -- UPDATE sys_menu SET component = 'monitor/log-login/index.vue' WHERE name = 'LogLogin' AND component LIKE 'system/log-login%' AND delete_time IS NULL;
 -- UPDATE sys_menu SET component = 'monitor/log-oper/index.vue' WHERE name = 'LogOper' AND component LIKE 'system/log-oper%' AND delete_time IS NULL;
--- UPDATE sys_menu SET component = 'monitor/sys-config/index.vue' WHERE name = 'SysConfig' AND component LIKE 'system/sys-config%' AND delete_time IS NULL;
+-- UPDATE sys_menu SET component = 'system/sys-config/index.vue' WHERE name = 'SysConfig' AND component = 'monitor/sys-config/index.vue' AND delete_time IS NULL;

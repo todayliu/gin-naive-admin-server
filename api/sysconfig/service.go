@@ -17,15 +17,31 @@ var SysConfigService = new(_sysConfigService)
 type configEditRequest struct {
 	ID          uint   `json:"id" binding:"required"`
 	ConfigKey   string `json:"configKey" binding:"required"`
-	ConfigValue string `json:"configValue"`
+	ConfigValue string `json:"configValue" binding:"required"`
 	Remark      string `json:"remark"`
 }
 
-// SiteDisplay 匿名可访问的站点展示信息（仅白名单配置键，供登录页与壳层标题使用）
+// siteDisplayKeys 登录页/壳层标题与页脚：优先使用短键 title、copyright；兼容旧键 site.title、site.copyright
+var siteDisplayKeys = []string{"title", "copyright", "site.title", "site.copyright"}
+
+func pickSiteTitle(m map[string]string) string {
+	if v := m["title"]; v != "" {
+		return v
+	}
+	return m["site.title"]
+}
+
+func pickSiteCopyright(m map[string]string) string {
+	if v := m["copyright"]; v != "" {
+		return v
+	}
+	return m["site.copyright"]
+}
+
+// SiteDisplay 匿名可访问的站点展示信息（供登录页与壳层标题使用）
 func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
-	keys := []string{"site.title", "site.copyright"}
 	var rows []SysConfig
-	if err := global.GNA_DB.Where("config_key IN ?", keys).Find(&rows).Error; err != nil {
+	if err := global.GNA_DB.Where("config_key IN ?", siteDisplayKeys).Find(&rows).Error; err != nil {
 		global.GNA_LOG.Error("读取站点展示配置失败", zap.Error(err))
 		response.FailWithMessage("读取失败", c)
 		return
@@ -35,8 +51,8 @@ func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
 		m[rows[i].ConfigKey] = rows[i].ConfigValue
 	}
 	response.OkWithData(gin.H{
-		"title":     m["site.title"],
-		"copyright": m["site.copyright"],
+		"title":     pickSiteTitle(m),
+		"copyright": pickSiteCopyright(m),
 	}, c)
 }
 
@@ -47,6 +63,38 @@ func (s *_sysConfigService) List(c *gin.Context) {
 		return
 	}
 	response.OkWithData(list, c)
+}
+
+type configAddRequest struct {
+	ConfigKey   string `json:"configKey" binding:"required"`
+	ConfigValue string `json:"configValue" binding:"required"`
+	Remark      string `json:"remark"`
+}
+
+// Add 新增一条系统参数（参数键唯一）
+func (s *_sysConfigService) Add(c *gin.Context) {
+	var req configAddRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
+		return
+	}
+	var n int64
+	global.GNA_DB.Model(&SysConfig{}).Where("config_key = ?", req.ConfigKey).Count(&n)
+	if n > 0 {
+		response.FailWithMessage("参数键已存在", c)
+		return
+	}
+	row := SysConfig{
+		ConfigKey:   req.ConfigKey,
+		ConfigValue: req.ConfigValue,
+		Remark:      req.Remark,
+	}
+	if err := global.GNA_DB.Create(&row).Error; err != nil {
+		global.GNA_LOG.Error("新增参数失败", zap.Error(err))
+		response.FailWithMessage("新增失败", c)
+		return
+	}
+	response.Ok(c)
 }
 
 func (s *_sysConfigService) Edit(c *gin.Context) {
@@ -79,8 +127,8 @@ func SeedDefaults(db *gorm.DB) {
 		return
 	}
 	rows := []SysConfig{
-		{ConfigKey: "site.title", ConfigValue: "Gin Naive Admin", Remark: "站点标题"},
-		{ConfigKey: "site.copyright", ConfigValue: "", Remark: "页脚版权"},
+		{ConfigKey: "title", ConfigValue: "Gin Naive Admin", Remark: "站点标题"},
+		{ConfigKey: "copyright", ConfigValue: "Copyright © 2025", Remark: "页脚版权"},
 	}
 	_ = db.Create(&rows).Error
 }
