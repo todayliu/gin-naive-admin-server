@@ -16,7 +16,6 @@ import (
 	"gin-admin-server/api/user"
 	"gin-admin-server/global"
 	"gin-admin-server/middleware"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,10 +27,7 @@ type _routerGroup struct{}
 func (r *_routerGroup) SetRoutesGroup(Router *gin.Engine) {
 	PublicGroup := Router.Group(global.GNA_CONFIG.Router.RouterPrefix)
 	{
-		// 健康监测
-		PublicGroup.GET("/health", func(c *gin.Context) {
-			c.JSON(http.StatusOK, "服务状态正常")
-		})
+		PublicGroup.GET("/health", HealthCheck)
 	}
 	{
 		r.SetupPublicRouters(PublicGroup)

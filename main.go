@@ -1,3 +1,22 @@
+// Package main Gin Naive Admin 服务端入口。
+//
+// @title Gin Naive Admin API
+// @version 1.0
+// @description 后台管理 REST 接口。统一响应结构体 `response.Response`：`code` 200 成功、401 Token 无效或过期、201 业务失败；`data` 为具体载荷。除「认证」「系统/健康」「站点展示」外，均需请求头 `AccessToken`。
+// @termsOfService https://swagger.io/terms/
+//
+// @contact.name API Support
+//
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+//
+// @host 127.0.0.1:8080
+// @BasePath /api
+//
+// @securityDefinitions.apikey AccessToken
+// @in header
+// @name AccessToken
+// @description 登录成功后返回的 JWT，请求头字段名为 AccessToken（与前端一致）
 package main
 
 import (

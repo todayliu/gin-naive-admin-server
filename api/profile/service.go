@@ -20,6 +20,13 @@ type _profileService struct{}
 
 var ProfileService = new(_profileService)
 
+// GetInfo 当前登录用户资料
+// @Summary     个人资料
+// @Tags        个人中心
+// @Produce     json
+// @Security    AccessToken
+// @Success     200 {object} response.Response
+// @Router      /profile/info [get]
 func (s *_profileService) GetInfo(c *gin.Context) {
 	uid := jwt_util.GetUserID(c)
 	if uid == 0 {
@@ -51,6 +58,15 @@ func (s *_profileService) GetInfo(c *gin.Context) {
 	}, c)
 }
 
+// UpdateInfo 更新个人资料
+// @Summary     更新个人资料
+// @Tags        个人中心
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body ProfileUpdateRequest true "请求体"
+// @Success     200 {object} response.Response
+// @Router      /profile/info [put]
 func (s *_profileService) UpdateInfo(c *gin.Context) {
 	uid := jwt_util.GetUserID(c)
 	if uid == 0 {
@@ -76,6 +92,16 @@ func (s *_profileService) UpdateInfo(c *gin.Context) {
 	response.Ok(c)
 }
 
+// UpdatePassword 修改登录密码
+// @Summary     修改密码
+// @Description 与登录相同：传输形态为二次 SHA256；需 salt、timestamp。
+// @Tags        个人中心
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body ProfilePasswordRequest true "请求体"
+// @Success     200 {object} response.Response
+// @Router      /profile/password [put]
 func (s *_profileService) UpdatePassword(c *gin.Context) {
 	uid := jwt_util.GetUserID(c)
 	if uid == 0 {

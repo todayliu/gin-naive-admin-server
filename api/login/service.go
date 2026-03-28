@@ -28,6 +28,13 @@ var LoginService = new(_LoginService)
 
 type _LoginService struct{}
 
+// Captcha 获取图形验证码
+// @Summary     获取验证码
+// @Description 返回 base64 图片与 captchaId、盐；登录前调用。验证码答案存于 Redis，键为 CAPTCHA_{captchaId}。
+// @Tags        认证
+// @Produce     json
+// @Success     200 {object} response.Response
+// @Router      /login/captcha [post]
 func (ls *_LoginService) Captcha(c *gin.Context) {
 	driver := base64Captcha.DriverString{
 		Width:           global.GNA_CONFIG.Captcha.ImgWidth,
@@ -55,6 +62,15 @@ func (ls *_LoginService) Captcha(c *gin.Context) {
 	}, "验证码获取成功", c)
 }
 
+// Login 用户登录
+// @Summary     登录
+// @Description password 为前端对明文密码做 SHA256 后，再与 salt、timestamp 组合 SHA256 的十六进制字符串；需携带验证码与 nonce（防重放）。
+// @Tags        认证
+// @Accept      json
+// @Produce     json
+// @Param       body body LoginRequest true "登录参数"
+// @Success     200 {object} response.Response
+// @Router      /login/login [post]
 func (ls *_LoginService) Login(c *gin.Context) {
 	var loginRequest LoginRequest
 	err := c.ShouldBindJSON(&loginRequest)

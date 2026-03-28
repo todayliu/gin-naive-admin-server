@@ -13,6 +13,12 @@ type _departmentService struct{}
 var DepartmentService = new(_departmentService)
 
 // GetDepartmentList 获取全部部门列表（扁平结构，前端自行构建树）
+// @Summary     部门列表
+// @Tags        部门
+// @Produce     json
+// @Security    AccessToken
+// @Success     200 {object} response.Response
+// @Router      /department/list [get]
 func (ds *_departmentService) GetDepartmentList(c *gin.Context) {
 	var list []*SysDepartment
 	err := global.GNA_DB.Order("parent_id ASC, sort ASC").Find(&list).Error
@@ -25,6 +31,14 @@ func (ds *_departmentService) GetDepartmentList(c *gin.Context) {
 }
 
 // UpdateDepartment 新增或修改部门
+// @Summary     保存部门
+// @Tags        部门
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysDepartment true "部门实体"
+// @Success     200 {object} response.Response
+// @Router      /department/edit [put]
 func (ds *_departmentService) UpdateDepartment(c *gin.Context) {
 	var dept SysDepartment
 	err := c.ShouldBindJSON(&dept)
@@ -46,6 +60,13 @@ func (ds *_departmentService) UpdateDepartment(c *gin.Context) {
 }
 
 // DeleteDepartment 删除部门
+// @Summary     删除部门
+// @Tags        部门
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "部门 ID"
+// @Success     200 {object} response.Response
+// @Router      /department/delete/{id} [delete]
 func (ds *_departmentService) DeleteDepartment(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {

@@ -34,7 +34,8 @@ func RunServer() {
 		欢迎使用 gin-naive-admin
 		当前版本:v1.0.0
 		服务启动成功:http://127.0.0.1%s
-	`, port)
+		Swagger 文档:http://127.0.0.1%s/swagger/index.html
+	`, port, port)
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		global.GNA_LOG.Error("服务异常退出", zap.Error(err))
 	}

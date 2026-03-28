@@ -13,6 +13,15 @@ type _positionService struct{}
 var PositionService = new(_positionService)
 
 // GetPositionList 分页查询职务级别列表（按 level 升序，数值越小级别越高）
+// @Summary     职务分页列表
+// @Tags        职务
+// @Produce     json
+// @Security    AccessToken
+// @Param       pageNo query int true "页码"
+// @Param       pageSize query int true "每页条数"
+// @Param       levelName query string false "级别名称模糊"
+// @Success     200 {object} response.Response
+// @Router      /position/list [get]
 func (s *_positionService) GetPositionList(c *gin.Context) {
 	var list []SysJobLevel
 	var req PositionPageRequest
@@ -49,6 +58,13 @@ func (s *_positionService) GetPositionList(c *gin.Context) {
 }
 
 // QueryPosition 查询职务级别详情
+// @Summary     职务详情
+// @Tags        职务
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "职务 ID"
+// @Success     200 {object} response.Response
+// @Router      /position/query/{id} [get]
 func (s *_positionService) QueryPosition(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -66,6 +82,14 @@ func (s *_positionService) QueryPosition(c *gin.Context) {
 }
 
 // AddPosition 新增职务级别
+// @Summary     新增职务
+// @Tags        职务
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysJobLevel true "职务"
+// @Success     200 {object} response.Response
+// @Router      /position/add [post]
 func (s *_positionService) AddPosition(c *gin.Context) {
 	var row SysJobLevel
 	err := c.ShouldBindJSON(&row)
@@ -84,6 +108,14 @@ func (s *_positionService) AddPosition(c *gin.Context) {
 }
 
 // EditPosition 修改职务级别
+// @Summary     编辑职务
+// @Tags        职务
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysJobLevel true "职务（含 id）"
+// @Success     200 {object} response.Response
+// @Router      /position/edit [put]
 func (s *_positionService) EditPosition(c *gin.Context) {
 	var row SysJobLevel
 	err := c.ShouldBindJSON(&row)
@@ -109,6 +141,13 @@ func (s *_positionService) EditPosition(c *gin.Context) {
 }
 
 // DeletePosition 删除职务级别
+// @Summary     删除职务
+// @Tags        职务
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "职务 ID"
+// @Success     200 {object} response.Response
+// @Router      /position/delete/{id} [delete]
 func (s *_positionService) DeletePosition(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {

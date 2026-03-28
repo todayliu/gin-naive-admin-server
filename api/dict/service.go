@@ -17,6 +17,16 @@ var DictService = new(_dictService)
 // ========== 字典类型 ==========
 
 // GetDictTypeList 分页查询字典类型列表
+// @Summary     字典类型分页列表
+// @Tags        字典
+// @Produce     json
+// @Security    AccessToken
+// @Param       pageNo query int true "页码"
+// @Param       pageSize query int true "每页条数"
+// @Param       typeCode query string false "类型编码模糊"
+// @Param       typeName query string false "类型名称模糊"
+// @Success     200 {object} response.Response
+// @Router      /dict/type/list [get]
 func (d *_dictService) GetDictTypeList(c *gin.Context) {
 	var list []SysDictType
 	var req DictTypePageRequest
@@ -56,6 +66,14 @@ func (d *_dictService) GetDictTypeList(c *gin.Context) {
 }
 
 // AddDictType 新增字典类型（若存在已软删除的相同编码则恢复）
+// @Summary     新增字典类型
+// @Tags        字典
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysDictType true "字典类型"
+// @Success     200 {object} response.Response
+// @Router      /dict/type/add [post]
 func (d *_dictService) AddDictType(c *gin.Context) {
 	var req SysDictType
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -105,6 +123,14 @@ func (d *_dictService) AddDictType(c *gin.Context) {
 }
 
 // EditDictType 修改字典类型
+// @Summary     编辑字典类型
+// @Tags        字典
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysDictType true "字典类型"
+// @Success     200 {object} response.Response
+// @Router      /dict/type/edit [put]
 func (d *_dictService) EditDictType(c *gin.Context) {
 	var req SysDictType
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -125,6 +151,13 @@ func (d *_dictService) EditDictType(c *gin.Context) {
 }
 
 // DeleteDictType 删除字典类型（同时软删除其下所有字典数据）
+// @Summary     删除字典类型
+// @Tags        字典
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "字典类型 ID"
+// @Success     200 {object} response.Response
+// @Router      /dict/type/delete/{id} [delete]
 func (d *_dictService) DeleteDictType(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -152,6 +185,16 @@ func (d *_dictService) DeleteDictType(c *gin.Context) {
 // ========== 字典数据 ==========
 
 // GetDictDataList 分页查询字典数据列表
+// @Summary     字典数据分页列表
+// @Tags        字典
+// @Produce     json
+// @Security    AccessToken
+// @Param       pageNo query int true "页码"
+// @Param       pageSize query int true "每页条数"
+// @Param       typeCode query string false "类型编码"
+// @Param       label query string false "标签模糊"
+// @Success     200 {object} response.Response
+// @Router      /dict/data/list [get]
 func (d *_dictService) GetDictDataList(c *gin.Context) {
 	var list []SysDictData
 	var req DictDataPageRequest
@@ -191,6 +234,14 @@ func (d *_dictService) GetDictDataList(c *gin.Context) {
 }
 
 // AddDictData 新增字典数据（若存在已软删除的相同数据则恢复）
+// @Summary     新增字典数据
+// @Tags        字典
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysDictData true "字典数据"
+// @Success     200 {object} response.Response
+// @Router      /dict/data/add [post]
 func (d *_dictService) AddDictData(c *gin.Context) {
 	var req SysDictData
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -240,6 +291,14 @@ func (d *_dictService) AddDictData(c *gin.Context) {
 }
 
 // EditDictData 修改字典数据
+// @Summary     编辑字典数据
+// @Tags        字典
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysDictData true "字典数据"
+// @Success     200 {object} response.Response
+// @Router      /dict/data/edit [put]
 func (d *_dictService) EditDictData(c *gin.Context) {
 	var req SysDictData
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -262,6 +321,13 @@ func (d *_dictService) EditDictData(c *gin.Context) {
 }
 
 // DeleteDictData 删除字典数据（软删除）
+// @Summary     删除字典数据
+// @Tags        字典
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "字典数据 ID"
+// @Success     200 {object} response.Response
+// @Router      /dict/data/delete/{id} [delete]
 func (d *_dictService) DeleteDictData(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -277,6 +343,13 @@ func (d *_dictService) DeleteDictData(c *gin.Context) {
 }
 
 // GetDictByType 根据类型编码获取字典数据（用于下拉选择等）
+// @Summary     按类型编码取字典项（登录可访问，用于下拉）
+// @Tags        字典
+// @Produce     json
+// @Security    AccessToken
+// @Param       typeCode path string true "类型编码"
+// @Success     200 {object} response.Response
+// @Router      /dict/data/{typeCode} [get]
 func (d *_dictService) GetDictByType(c *gin.Context) {
 	typeCode := c.Param("typeCode")
 	if typeCode == "" {

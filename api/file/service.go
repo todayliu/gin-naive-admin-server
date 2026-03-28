@@ -17,6 +17,16 @@ type _fileService struct{}
 
 var FileService = new(_fileService)
 
+// Upload 上传文件（multipart）
+// @Summary     文件上传
+// @Description form 字段名 `file`；成功返回 url、path（相对静态目录）。
+// @Tags        文件
+// @Accept      multipart/form-data
+// @Produce     json
+// @Security    AccessToken
+// @Param       file formData file true "文件"
+// @Success     200 {object} response.Response
+// @Router      /file/upload [post]
 func (s *_fileService) Upload(c *gin.Context) {
 	fh, err := c.FormFile("file")
 	if err != nil {

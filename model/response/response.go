@@ -7,10 +7,10 @@ import (
 )
 
 type Response struct {
-	Code    int         `json:"code"`
+	Code    int         `json:"code" example:"200"`
 	Data    interface{} `json:"data"`
-	Message string      `json:"message"`
-	Success bool        `json:"success"`
+	Message string      `json:"message" example:"查询成功"`
+	Success bool        `json:"success" example:"true"`
 }
 
 const (

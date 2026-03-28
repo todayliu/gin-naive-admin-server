@@ -14,7 +14,8 @@ type _sysConfigService struct{}
 
 var SysConfigService = new(_sysConfigService)
 
-type configEditRequest struct {
+// ConfigEditRequest 编辑系统参数请求体
+type ConfigEditRequest struct {
 	ID          uint   `json:"id" binding:"required"`
 	ConfigKey   string `json:"configKey" binding:"required"`
 	ConfigValue string `json:"configValue" binding:"required"`
@@ -39,6 +40,12 @@ func pickSiteCopyright(m map[string]string) string {
 }
 
 // SiteDisplay 匿名可访问的站点展示信息（供登录页与壳层标题使用）
+// @Summary     站点展示（匿名）
+// @Description 返回站点标题、版权等，无需登录。
+// @Tags        系统配置
+// @Produce     json
+// @Success     200 {object} response.Response
+// @Router      /config/site-display [get]
 func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
 	var rows []SysConfig
 	if err := global.GNA_DB.Where("config_key IN ?", siteDisplayKeys).Find(&rows).Error; err != nil {
@@ -56,6 +63,13 @@ func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
 	}, c)
 }
 
+// List 系统参数列表
+// @Summary     系统参数列表
+// @Tags        系统配置
+// @Produce     json
+// @Security    AccessToken
+// @Success     200 {object} response.Response
+// @Router      /config/list [get]
 func (s *_sysConfigService) List(c *gin.Context) {
 	var list []SysConfig
 	if err := global.GNA_DB.Order("config_key asc").Find(&list).Error; err != nil {
@@ -65,15 +79,24 @@ func (s *_sysConfigService) List(c *gin.Context) {
 	response.OkWithData(list, c)
 }
 
-type configAddRequest struct {
+// ConfigAddRequest 新增系统参数请求体
+type ConfigAddRequest struct {
 	ConfigKey   string `json:"configKey" binding:"required"`
 	ConfigValue string `json:"configValue" binding:"required"`
 	Remark      string `json:"remark"`
 }
 
 // Add 新增一条系统参数（参数键唯一）
+// @Summary     新增系统参数
+// @Tags        系统配置
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body ConfigAddRequest true "请求体"
+// @Success     200 {object} response.Response
+// @Router      /config/add [post]
 func (s *_sysConfigService) Add(c *gin.Context) {
-	var req configAddRequest
+	var req ConfigAddRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
@@ -97,8 +120,17 @@ func (s *_sysConfigService) Add(c *gin.Context) {
 	response.Ok(c)
 }
 
+// Edit 编辑系统参数
+// @Summary     编辑系统参数
+// @Tags        系统配置
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body ConfigEditRequest true "请求体"
+// @Success     200 {object} response.Response
+// @Router      /config/edit [put]
 func (s *_sysConfigService) Edit(c *gin.Context) {
-	var req configEditRequest
+	var req ConfigEditRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return

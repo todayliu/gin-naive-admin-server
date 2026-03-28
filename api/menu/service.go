@@ -20,7 +20,13 @@ type _menuService struct{}
 var MenuService = new(_menuService)
 
 // InitMenuList 根据当前用户获取可访问的菜单路由（用于动态路由）
-// InitMenuList 根据当前用户获取可访问的菜单路由（用于动态路由）
+// @Summary     当前用户菜单路由树
+// @Description 用于前端动态路由注册；需登录。
+// @Tags        菜单
+// @Produce     json
+// @Security    AccessToken
+// @Success     200 {object} response.Response
+// @Router      /menu/router [get]
 func (ms *_menuService) InitMenuList(c *gin.Context) {
 	userId := jwt_util.GetUserID(c)
 	routes, err := ms.GetMenuList(userId)
@@ -122,6 +128,12 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 }
 
 // GetAllMenuList 获取全部菜单树（用于菜单管理）
+// @Summary     全部菜单树
+// @Tags        菜单
+// @Produce     json
+// @Security    AccessToken
+// @Success     200 {object} response.Response
+// @Router      /menu/list [get]
 func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 	var menus []*SysMenu
 	err := global.GNA_DB.Order("sort ASC").Find(&menus).Error
@@ -169,6 +181,14 @@ func (ms *_menuService) fillMenuNameIfEmpty(menu *SysMenu) {
 }
 
 // AddMenu 新增菜单（不含 id）
+// @Summary     新增菜单
+// @Tags        菜单
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysMenu true "菜单实体（勿传 id）"
+// @Success     200 {object} response.Response
+// @Router      /menu/add [post]
 func (ms *_menuService) AddMenu(c *gin.Context) {
 	var menu SysMenu
 	if err := c.ShouldBindJSON(&menu); err != nil {
@@ -186,6 +206,14 @@ func (ms *_menuService) AddMenu(c *gin.Context) {
 }
 
 // UpdateMenu 修改菜单（必须带 id）
+// @Summary     编辑菜单
+// @Tags        菜单
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysMenu true "菜单实体（含 id）"
+// @Success     200 {object} response.Response
+// @Router      /menu/edit [put]
 func (ms *_menuService) UpdateMenu(c *gin.Context) {
 	var menu SysMenu
 	err := c.ShouldBindJSON(&menu)
@@ -212,6 +240,13 @@ func (ms *_menuService) UpdateMenu(c *gin.Context) {
 }
 
 // DeleteMenu 删除菜单（永久删除，同时删除角色菜单关联）
+// @Summary     删除菜单
+// @Tags        菜单
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "菜单 ID"
+// @Success     200 {object} response.Response
+// @Router      /menu/delete/{id} [delete]
 func (ms *_menuService) DeleteMenu(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {

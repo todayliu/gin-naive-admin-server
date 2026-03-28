@@ -28,6 +28,20 @@ func hashPasswordForStorage(plainPassword string) string {
 }
 
 // GetUserList 分页查询用户列表
+// @Summary     用户分页列表
+// @Description 开启数据范围时非超管仅看自己及所辖部门用户。
+// @Tags        用户
+// @Produce     json
+// @Security    AccessToken
+// @Param       pageNo query int true "页码"
+// @Param       pageSize query int true "每页条数"
+// @Param       username query string false "账号模糊"
+// @Param       nickname query string false "昵称模糊"
+// @Param       gender query string false "性别"
+// @Param       status query string false "状态"
+// @Param       departmentId query string false "部门 ID"
+// @Success     200 {object} response.Response
+// @Router      /user/list [get]
 func (us *_userService) GetUserList(c *gin.Context) {
 	var list []SysUser
 	var userRequest UserPageRequest
@@ -100,6 +114,13 @@ func (us *_userService) GetUserList(c *gin.Context) {
 }
 
 // QueryUser 查询用户详情（含角色ID列表）
+// @Summary     用户详情
+// @Tags        用户
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "用户 ID"
+// @Success     200 {object} response.Response
+// @Router      /user/query/{id} [get]
 func (us *_userService) QueryUser(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -151,6 +172,13 @@ func (us *_userService) QueryUser(c *gin.Context) {
 }
 
 // GetUserRoles 获取用户所属角色ID列表
+// @Summary     用户角色 ID 列表
+// @Tags        用户
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "用户 ID"
+// @Success     200 {object} response.Response
+// @Router      /user/roles/{id} [get]
 func (us *_userService) GetUserRoles(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -168,6 +196,14 @@ func (us *_userService) GetUserRoles(c *gin.Context) {
 }
 
 // AddUser 新增用户
+// @Summary     新增用户
+// @Tags        用户
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body UserAddRequest true "用户"
+// @Success     200 {object} response.Response
+// @Router      /user/add [post]
 func (us *_userService) AddUser(c *gin.Context) {
 	var req UserAddRequest
 	err := c.ShouldBindJSON(&req)
@@ -260,6 +296,14 @@ func (us *_userService) AddUser(c *gin.Context) {
 }
 
 // EditUser 修改用户（密码可选，不传则不更新）
+// @Summary     编辑用户
+// @Tags        用户
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body UserEditRequest true "用户"
+// @Success     200 {object} response.Response
+// @Router      /user/edit [put]
 func (us *_userService) EditUser(c *gin.Context) {
 	var req UserEditRequest
 	err := c.ShouldBindJSON(&req)
@@ -353,6 +397,13 @@ func (us *_userService) EditUser(c *gin.Context) {
 }
 
 // DeleteUser 删除用户（永久删除，同时删除用户角色关联）
+// @Summary     删除用户
+// @Tags        用户
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "用户 ID"
+// @Success     200 {object} response.Response
+// @Router      /user/delete/{id} [delete]
 func (us *_userService) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {

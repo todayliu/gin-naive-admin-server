@@ -1,0 +1,1490 @@
+basePath: /api
+definitions:
+  department.SysDepartment:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/department.SysDepartment'
+        type: array
+      code:
+        type: string
+      createTime:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      parentId:
+        type: integer
+      remark:
+        type: string
+      sort:
+        type: integer
+      status:
+        type: integer
+      updateTime:
+        type: string
+    required:
+    - name
+    type: object
+  dict.SysDictData:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      label:
+        type: string
+      remark:
+        type: string
+      sort:
+        type: integer
+      status:
+        type: integer
+      typeCode:
+        type: string
+      updateTime:
+        type: string
+      value:
+        type: string
+    required:
+    - label
+    - typeCode
+    - value
+    type: object
+  dict.SysDictType:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+      sort:
+        type: integer
+      status:
+        type: integer
+      typeCode:
+        type: string
+      typeName:
+        type: string
+      updateTime:
+        type: string
+    required:
+    - typeCode
+    - typeName
+    type: object
+  login.LoginRequest:
+    properties:
+      captcha:
+        maxLength: 4
+        minLength: 4
+        type: string
+      captchaId:
+        type: string
+      nonce:
+        type: string
+      password:
+        type: string
+      salt:
+        type: string
+      timestamp:
+        type: integer
+      username:
+        type: string
+      uuid:
+        type: string
+    required:
+    - captcha
+    - password
+    - username
+    type: object
+  menu.SysMenu:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/menu.SysMenu'
+        type: array
+      component:
+        type: string
+      createTime:
+        type: string
+      fixedInTabs:
+        type: boolean
+      hideInMenu:
+        type: boolean
+      icon:
+        type: string
+      id:
+        type: integer
+      keepAlive:
+        type: boolean
+      link:
+        type: string
+      linkMode:
+        type: string
+      name:
+        type: string
+      nestedRouteRenderEnd:
+        type: boolean
+      parentId:
+        type: integer
+      path:
+        type: string
+      perms:
+        type: string
+      redirect:
+        type: string
+      sort:
+        description: 系统字段
+        type: integer
+      status:
+        type: integer
+      title:
+        description: Meta 字段
+        type: string
+      titleI18nKey:
+        type: string
+      type:
+        type: string
+      updateTime:
+        type: string
+    required:
+    - title
+    type: object
+  position.SysJobLevel:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: integer
+      level:
+        type: integer
+      levelName:
+        type: string
+      updateTime:
+        type: string
+    required:
+    - level
+    - levelName
+    type: object
+  profile.ProfilePasswordRequest:
+    properties:
+      newPassword:
+        minLength: 6
+        type: string
+      oldPassword:
+        type: string
+      salt:
+        type: string
+      timestamp:
+        type: integer
+    required:
+    - newPassword
+    - oldPassword
+    - salt
+    - timestamp
+    type: object
+  profile.ProfileUpdateRequest:
+    properties:
+      uAvatar:
+        type: string
+      uEmail:
+        type: string
+      uMobile:
+        type: string
+      uNickname:
+        type: string
+    required:
+    - uMobile
+    type: object
+  response.Response:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data: {}
+      message:
+        example: 查询成功
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  role.SetPower:
+    properties:
+      powers:
+        items:
+          type: integer
+        type: array
+      roleId:
+        type: integer
+    required:
+    - roleId
+    type: object
+  role.SysRole:
+    properties:
+      code:
+        type: string
+      createTime:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        type: integer
+      updateTime:
+        type: string
+    required:
+    - code
+    - name
+    type: object
+  sysconfig.ConfigAddRequest:
+    properties:
+      configKey:
+        type: string
+      configValue:
+        type: string
+      remark:
+        type: string
+    required:
+    - configKey
+    - configValue
+    type: object
+  sysconfig.ConfigEditRequest:
+    properties:
+      configKey:
+        type: string
+      configValue:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+    required:
+    - configKey
+    - configValue
+    - id
+    type: object
+  user.UserAddRequest:
+    properties:
+      account:
+        type: string
+      departmentId:
+        description: 所属部门ID（兼容，取第一个）
+        type: integer
+      departmentIds:
+        description: 所属部门ID列表（多选）
+        items:
+          type: integer
+        type: array
+      gender:
+        type: integer
+      password:
+        minLength: 6
+        type: string
+      positionIds:
+        description: 职务级别ID列表（多选）
+        items:
+          type: integer
+        type: array
+      roleIds:
+        description: 用户角色ID列表
+        items:
+          type: integer
+        type: array
+      status:
+        type: integer
+      uAvatar:
+        type: string
+      uEmail:
+        type: string
+      uMobile:
+        type: string
+      uName:
+        type: string
+      uNickname:
+        type: string
+    required:
+    - account
+    - password
+    - uMobile
+    - uName
+    type: object
+  user.UserEditRequest:
+    properties:
+      account:
+        type: string
+      departmentId:
+        description: 所属部门ID（兼容，取第一个）
+        type: integer
+      departmentIds:
+        description: 所属部门ID列表（多选）
+        items:
+          type: integer
+        type: array
+      gender:
+        type: integer
+      id:
+        type: integer
+      password:
+        description: 可选，传则更新密码
+        type: string
+      positionIds:
+        description: 职务级别ID列表（多选）
+        items:
+          type: integer
+        type: array
+      roleIds:
+        description: 用户角色ID列表
+        items:
+          type: integer
+        type: array
+      status:
+        type: integer
+      uAvatar:
+        type: string
+      uEmail:
+        type: string
+      uMobile:
+        type: string
+      uName:
+        type: string
+      uNickname:
+        type: string
+    required:
+    - account
+    - id
+    - uMobile
+    - uName
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact:
+    name: API Support
+  description: 后台管理 REST 接口。统一响应结构体 `response.Response`：`code` 200 成功、401 Token 无效或过期、201
+    业务失败；`data` 为具体载荷。除「认证」「系统/健康」「站点展示」外，均需请求头 `AccessToken`。
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://swagger.io/terms/
+  title: Gin Naive Admin API
+  version: "1.0"
+paths:
+  /config/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/sysconfig.ConfigAddRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增系统参数
+      tags:
+      - 系统配置
+  /config/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/sysconfig.ConfigEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑系统参数
+      tags:
+      - 系统配置
+  /config/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 系统参数列表
+      tags:
+      - 系统配置
+  /config/site-display:
+    get:
+      description: 返回站点标题、版权等，无需登录。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 站点展示（匿名）
+      tags:
+      - 系统配置
+  /dashboard/stats:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 仪表盘统计
+      tags:
+      - 仪表盘
+  /department/delete/{id}:
+    delete:
+      parameters:
+      - description: 部门 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除部门
+      tags:
+      - 部门
+  /department/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 部门实体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/department.SysDepartment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 保存部门
+      tags:
+      - 部门
+  /department/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 部门列表
+      tags:
+      - 部门
+  /dict/data/{typeCode}:
+    get:
+      parameters:
+      - description: 类型编码
+        in: path
+        name: typeCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 按类型编码取字典项（登录可访问，用于下拉）
+      tags:
+      - 字典
+  /dict/data/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典数据
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.SysDictData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增字典数据
+      tags:
+      - 字典
+  /dict/data/delete/{id}:
+    delete:
+      parameters:
+      - description: 字典数据 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除字典数据
+      tags:
+      - 字典
+  /dict/data/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典数据
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.SysDictData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑字典数据
+      tags:
+      - 字典
+  /dict/data/list:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 类型编码
+        in: query
+        name: typeCode
+        type: string
+      - description: 标签模糊
+        in: query
+        name: label
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 字典数据分页列表
+      tags:
+      - 字典
+  /dict/type/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.SysDictType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增字典类型
+      tags:
+      - 字典
+  /dict/type/delete/{id}:
+    delete:
+      parameters:
+      - description: 字典类型 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除字典类型
+      tags:
+      - 字典
+  /dict/type/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 字典类型
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dict.SysDictType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑字典类型
+      tags:
+      - 字典
+  /dict/type/list:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 类型编码模糊
+        in: query
+        name: typeCode
+        type: string
+      - description: 类型名称模糊
+        in: query
+        name: typeName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 字典类型分页列表
+      tags:
+      - 字典
+  /file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: form 字段名 `file`；成功返回 url、path（相对静态目录）。
+      parameters:
+      - description: 文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 文件上传
+      tags:
+      - 文件
+  /health:
+    get:
+      description: 用于探活或负载均衡，无需鉴权。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 服务状态正常
+          schema:
+            type: string
+      summary: 健康检查
+      tags:
+      - 系统
+  /log/login/list:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 账号模糊
+        in: query
+        name: account
+        type: string
+      - description: 状态
+        in: query
+        name: status
+        type: integer
+      - description: 开始时间
+        in: query
+        name: beginTime
+        type: string
+      - description: 结束时间
+        in: query
+        name: endTime
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 登录日志列表
+      tags:
+      - 日志
+  /log/oper/list:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 账号模糊
+        in: query
+        name: account
+        type: string
+      - description: HTTP 方法
+        in: query
+        name: method
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 操作日志列表
+      tags:
+      - 日志
+  /login/captcha:
+    post:
+      description: 返回 base64 图片与 captchaId、盐；登录前调用。验证码答案存于 Redis，键为 CAPTCHA_{captchaId}。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 获取验证码
+      tags:
+      - 认证
+  /login/login:
+    post:
+      consumes:
+      - application/json
+      description: password 为前端对明文密码做 SHA256 后，再与 salt、timestamp 组合 SHA256 的十六进制字符串；需携带验证码与
+        nonce（防重放）。
+      parameters:
+      - description: 登录参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/login.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 登录
+      tags:
+      - 认证
+  /menu/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单实体（勿传 id）
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/menu.SysMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增菜单
+      tags:
+      - 菜单
+  /menu/delete/{id}:
+    delete:
+      parameters:
+      - description: 菜单 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除菜单
+      tags:
+      - 菜单
+  /menu/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单实体（含 id）
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/menu.SysMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑菜单
+      tags:
+      - 菜单
+  /menu/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 全部菜单树
+      tags:
+      - 菜单
+  /menu/router:
+    get:
+      description: 用于前端动态路由注册；需登录。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 当前用户菜单路由树
+      tags:
+      - 菜单
+  /permission/button-codes:
+    get:
+      description: data.codes 为权限字符串数组，与前端 v-permission 一致。
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 当前用户按钮权限码
+      tags:
+      - 权限
+  /position/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 职务
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/position.SysJobLevel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增职务
+      tags:
+      - 职务
+  /position/delete/{id}:
+    delete:
+      parameters:
+      - description: 职务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除职务
+      tags:
+      - 职务
+  /position/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 职务（含 id）
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/position.SysJobLevel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑职务
+      tags:
+      - 职务
+  /position/list:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 级别名称模糊
+        in: query
+        name: levelName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 职务分页列表
+      tags:
+      - 职务
+  /position/query/{id}:
+    get:
+      parameters:
+      - description: 职务 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 职务详情
+      tags:
+      - 职务
+  /profile/info:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 个人资料
+      tags:
+      - 个人中心
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/profile.ProfileUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 更新个人资料
+      tags:
+      - 个人中心
+  /profile/password:
+    put:
+      consumes:
+      - application/json
+      description: 与登录相同：传输形态为二次 SHA256；需 salt、timestamp。
+      parameters:
+      - description: 请求体
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/profile.ProfilePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 修改密码
+      tags:
+      - 个人中心
+  /role/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/role.SysRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增角色
+      tags:
+      - 角色
+  /role/delete/{id}:
+    delete:
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除角色
+      tags:
+      - 角色
+  /role/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色（含 id）
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/role.SysRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑角色
+      tags:
+      - 角色
+  /role/list:
+    get:
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 角色名模糊
+        in: query
+        name: name
+        type: string
+      - description: 角色编码模糊
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 角色分页列表
+      tags:
+      - 角色
+  /role/powerTree/{id}:
+    get:
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 角色权限树
+      tags:
+      - 角色
+  /role/query/{id}:
+    get:
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 角色详情
+      tags:
+      - 角色
+  /role/setRolePower:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色 ID 与菜单 ID 列表
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/role.SetPower'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 分配角色菜单权限
+      tags:
+      - 角色
+  /user/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserAddRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 新增用户
+      tags:
+      - 用户
+  /user/delete/{id}:
+    delete:
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 删除用户
+      tags:
+      - 用户
+  /user/edit:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserEditRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 编辑用户
+      tags:
+      - 用户
+  /user/list:
+    get:
+      description: 开启数据范围时非超管仅看自己及所辖部门用户。
+      parameters:
+      - description: 页码
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: 每页条数
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: 账号模糊
+        in: query
+        name: username
+        type: string
+      - description: 昵称模糊
+        in: query
+        name: nickname
+        type: string
+      - description: 性别
+        in: query
+        name: gender
+        type: string
+      - description: 状态
+        in: query
+        name: status
+        type: string
+      - description: 部门 ID
+        in: query
+        name: departmentId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 用户分页列表
+      tags:
+      - 用户
+  /user/query/{id}:
+    get:
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 用户详情
+      tags:
+      - 用户
+  /user/roles/{id}:
+    get:
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - AccessToken: []
+      summary: 用户角色 ID 列表
+      tags:
+      - 用户
+securityDefinitions:
+  AccessToken:
+    description: 登录成功后返回的 JWT，请求头字段名为 AccessToken（与前端一致）
+    in: header
+    name: AccessToken
+    type: apiKey
+swagger: "2.0"

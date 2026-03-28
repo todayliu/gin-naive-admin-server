@@ -15,6 +15,16 @@ type _roleService struct{}
 var RoleService = new(_roleService)
 
 // GetRoleList 分页查询角色列表
+// @Summary     角色分页列表
+// @Tags        角色
+// @Produce     json
+// @Security    AccessToken
+// @Param       pageNo query int true "页码"
+// @Param       pageSize query int true "每页条数"
+// @Param       name query string false "角色名模糊"
+// @Param       code query string false "角色编码模糊"
+// @Success     200 {object} response.Response
+// @Router      /role/list [get]
 func (r *_roleService) GetRoleList(c *gin.Context) {
 	var list []SysRole
 	var roleRequest RolePageRequest
@@ -55,6 +65,14 @@ func (r *_roleService) GetRoleList(c *gin.Context) {
 }
 
 // AddRole 新增角色
+// @Summary     新增角色
+// @Tags        角色
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysRole true "角色"
+// @Success     200 {object} response.Response
+// @Router      /role/add [post]
 func (r *_roleService) AddRole(c *gin.Context) {
 	var roleReq SysRole
 	err := c.ShouldBindJSON(&roleReq)
@@ -75,6 +93,13 @@ func (r *_roleService) AddRole(c *gin.Context) {
 }
 
 // QueryRole 查询角色详情
+// @Summary     角色详情
+// @Tags        角色
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "角色 ID"
+// @Success     200 {object} response.Response
+// @Router      /role/query/{id} [get]
 func (r *_roleService) QueryRole(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -93,6 +118,14 @@ func (r *_roleService) QueryRole(c *gin.Context) {
 }
 
 // EditRole 修改角色
+// @Summary     编辑角色
+// @Tags        角色
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SysRole true "角色（含 id）"
+// @Success     200 {object} response.Response
+// @Router      /role/edit [put]
 func (r *_roleService) EditRole(c *gin.Context) {
 	var roleReq SysRole
 	err := c.ShouldBindJSON(&roleReq)
@@ -113,6 +146,13 @@ func (r *_roleService) EditRole(c *gin.Context) {
 }
 
 // DeleteRole 删除角色（永久删除，同时删除用户角色、角色菜单关联）
+// @Summary     删除角色
+// @Tags        角色
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "角色 ID"
+// @Success     200 {object} response.Response
+// @Router      /role/delete/{id} [delete]
 func (r *_roleService) DeleteRole(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -146,6 +186,13 @@ func (r *_roleService) DeleteRole(c *gin.Context) {
 }
 
 // GetPowerTree 获取角色权限树（全部菜单树 + 角色已选菜单ID）
+// @Summary     角色权限树
+// @Tags        角色
+// @Produce     json
+// @Security    AccessToken
+// @Param       id path int true "角色 ID"
+// @Success     200 {object} response.Response
+// @Router      /role/powerTree/{id} [get]
 func (r *_roleService) GetPowerTree(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -201,6 +248,14 @@ func (r *_roleService) buildPowersTree(menus []*menu.SysMenu, parentID uint) []*
 }
 
 // SetRolePower 设置角色权限（菜单ID列表）
+// @Summary     分配角色菜单权限
+// @Tags        角色
+// @Accept      json
+// @Produce     json
+// @Security    AccessToken
+// @Param       body body SetPower true "角色 ID 与菜单 ID 列表"
+// @Success     200 {object} response.Response
+// @Router      /role/setRolePower [post]
 func (r *_roleService) SetRolePower(c *gin.Context) {
 	var setPowerReq SetPower
 	err := c.ShouldBindJSON(&setPowerReq)

@@ -12,6 +12,7 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 - **Viper** — YAML 配置与热更新
 - **Zap** — 结构化日志（支持文件轮转）
 - **验证码**（base64Captcha）等
+- **Swagger**（[swaggo/swag](https://github.com/swaggo/swag) + gin-swagger）— OpenAPI 2.0 与 `/swagger` UI
 
 ## 工程结构（简要）
 
@@ -25,6 +26,7 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 | `permission/` | 权限注册、菜单/按钮种子、用户有效权限解析等 |
 | `global/` | 全局配置与单例（DB、Redis、Logger 等） |
 | `config.development.yaml` / `config.release.yaml` | 环境与运行配置示例 |
+| `docs/` | `swag` 生成的 OpenAPI 文档（`docs.go`、`swagger.json`、`swagger.yaml`） |
 
 对外 API 统一前缀由配置项 **`router.router-prefix`** 控制，默认为 **`/api`**（例如健康检查：`GET /api/health`）。
 
@@ -51,6 +53,22 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 - **`zap`**：日志级别、目录、轮转  
 
 首次启动会在连接数据库后执行表注册及部分种子数据（菜单按钮权限、系统默认配置等），具体逻辑见 `main.go` 与 `permission`、`sysconfig` 包。
+
+## OpenAPI / Swagger 文档
+
+服务启动后，在浏览器打开：
+
+- **Swagger UI**：`http://127.0.0.1:<port>/swagger/index.html`（端口见 `system.port`，默认 `8080`）
+
+说明：
+
+- 文档中的 **`BasePath`** 为 `/api`，与配置项 `router.router-prefix` 一致；若修改前缀，请在 `main.go` 顶部的 swag 注释中同步修改 `@BasePath` 并重新生成文档。
+- 需登录的接口在 Swagger 中已标记 **`AccessToken`**，调试前点击右上角 **Authorize**，填入登录后获得的 JWT（请求头字段名 **`AccessToken`**，与前端一致）。
+- 修改或新增接口注释后，在项目根目录执行以下命令重新生成 `docs/`：
+
+```bash
+go run github.com/swaggo/swag/cmd/swag@v1.16.4 init -g main.go -o docs --parseDependency --parseInternal
+```
 
 ## 运行方式
 
