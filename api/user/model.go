@@ -50,14 +50,21 @@ func (SysUserJobLevel) TableName() string {
 	return "sys_user_job_level"
 }
 
-// UserPageRequest 用户分页查询请求
-type UserPageRequest struct {
-	page_info.PageInfo
+// UserListFilters 列表/导出共用的查询条件（不含分页；导出接口只绑定此结构）
+type UserListFilters struct {
 	Username     string `form:"username"`
 	Nickname     string `form:"nickname"`
+	UName        string `form:"uName"`        // 用户姓名（u_name）模糊
+	UNickname    string `form:"uNickname"`    // 与 nickname 二选一，兼容前端查询表单
 	Gender       string `form:"gender"`
 	Status       string `form:"status"`
 	DepartmentID string `form:"departmentId"`
+}
+
+// UserPageRequest 用户分页查询请求
+type UserPageRequest struct {
+	page_info.PageInfo
+	UserListFilters
 }
 
 // UserAddRequest 新增用户请求

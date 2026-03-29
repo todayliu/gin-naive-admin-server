@@ -11,6 +11,9 @@ func (r *_userRouter) InitUserRouter(Router *gin.RouterGroup) {
 	userRouter := Router.Group("user")
 	{
 		userRouter.GET("list", UserService.GetUserList)
+		userRouter.GET("export", UserService.ExportUsers)
+		userRouter.GET("import-template", UserService.DownloadImportTemplate)
+		userRouter.POST("import", UserService.ImportUsers)
 		userRouter.GET("query/:id", UserService.QueryUser)
 		userRouter.GET("roles/:id", UserService.GetUserRoles)
 		userRouter.POST("add", UserService.AddUser)

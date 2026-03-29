@@ -51,42 +51,7 @@ func (us *_userService) GetUserList(c *gin.Context) {
 		response.FailWithMessage(errMessage, c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysUser{})
-
-	if userRequest.Username != "" {
-		db = db.Where("account LIKE ?", "%"+strings.TrimSpace(userRequest.Username)+"%")
-	}
-	if userRequest.Nickname != "" {
-		db = db.Where("u_nickname LIKE ?", "%"+strings.TrimSpace(userRequest.Nickname)+"%")
-	}
-	if userRequest.Gender != "" {
-		if g, err := strconv.ParseUint(userRequest.Gender, 10, 32); err == nil {
-			db = db.Where("gender = ?", uint(g))
-		}
-	}
-	if userRequest.Status != "" {
-		if s, err := strconv.ParseUint(userRequest.Status, 10, 32); err == nil {
-			db = db.Where("status = ?", uint(s))
-		}
-	}
-	if userRequest.DepartmentID != "" {
-		if d, err := strconv.ParseUint(userRequest.DepartmentID, 10, 32); err == nil && d > 0 {
-			did := uint(d)
-			db = db.Where("department_id = ? OR EXISTS (SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id = ?)", did, did)
-		}
-	}
-
-	uid := jwt_util.GetUserID(c)
-	if global.GNA_CONFIG.Security.DataScopeEnabled && uid > 0 && !permission.IsSuperUser(uid) {
-		scope := ScopedDepartmentIDs(uid)
-		if len(scope) == 0 {
-			db = db.Where("sys_user.id = ?", uid)
-		} else {
-			db = db.Where(`sys_user.id = ? OR sys_user.department_id IN ? OR EXISTS (
-				SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id IN ?
-			)`, uid, scope, scope)
-		}
-	}
+	db := buildUserListQuery(c, &userRequest.UserListFilters)
 
 	var total int64
 
@@ -111,6 +76,54 @@ func (us *_userService) GetUserList(c *gin.Context) {
 		PageNo:   userRequest.PageNo,
 		PageSize: userRequest.PageSize,
 	}, c)
+}
+
+// buildUserListQuery 列表/导出共用的筛选与数据范围（不含分页、排序）
+func buildUserListQuery(c *gin.Context, filters *UserListFilters) *gorm.DB {
+	db := global.GNA_DB.Model(&SysUser{})
+
+	if filters.Username != "" {
+		db = db.Where("account LIKE ?", "%"+strings.TrimSpace(filters.Username)+"%")
+	}
+	if filters.UName != "" {
+		db = db.Where("u_name LIKE ?", "%"+strings.TrimSpace(filters.UName)+"%")
+	}
+	nick := strings.TrimSpace(filters.Nickname)
+	if nick == "" {
+		nick = strings.TrimSpace(filters.UNickname)
+	}
+	if nick != "" {
+		db = db.Where("u_nickname LIKE ?", "%"+nick+"%")
+	}
+	if filters.Gender != "" {
+		if g, err := strconv.ParseUint(filters.Gender, 10, 32); err == nil {
+			db = db.Where("gender = ?", uint(g))
+		}
+	}
+	if filters.Status != "" {
+		if s, err := strconv.ParseUint(filters.Status, 10, 32); err == nil {
+			db = db.Where("status = ?", uint(s))
+		}
+	}
+	if filters.DepartmentID != "" {
+		if d, err := strconv.ParseUint(filters.DepartmentID, 10, 32); err == nil && d > 0 {
+			did := uint(d)
+			db = db.Where("department_id = ? OR EXISTS (SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id = ?)", did, did)
+		}
+	}
+
+	uid := jwt_util.GetUserID(c)
+	if global.GNA_CONFIG.Security.DataScopeEnabled && uid > 0 && !permission.IsSuperUser(uid) {
+		scope := ScopedDepartmentIDs(uid)
+		if len(scope) == 0 {
+			db = db.Where("sys_user.id = ?", uid)
+		} else {
+			db = db.Where(`sys_user.id = ? OR sys_user.department_id IN ? OR EXISTS (
+				SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id IN ?
+			)`, uid, scope, scope)
+		}
+	}
+	return db
 }
 
 // QueryUser 查询用户详情（含角色ID列表）

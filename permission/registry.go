@@ -41,6 +41,9 @@ func buildRoutePermMap(prefix string) map[string]string {
 	// 用户
 	put("GET", "/user/query/:id", "system:user:query")
 	put("GET", "/user/roles/:id", "system:user:roles")
+	put("GET", "/user/export", "system:user:export")
+	put("GET", "/user/import-template", "system:user:import")
+	put("POST", "/user/import", "system:user:import")
 	put("POST", "/user/add", "system:user:add")
 	put("PUT", "/user/edit", "system:user:edit")
 	put("DELETE", "/user/delete/:id", "system:user:delete")

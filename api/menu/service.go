@@ -39,18 +39,24 @@ func (ms *_menuService) InitMenuList(c *gin.Context) {
 }
 
 // GetMenuList 根据用户ID获取其可访问的菜单树（用户→角色→菜单）
+// 超级管理员：返回库中全部启用目录/页面（type 0、1），与「全部接口权限码」一致，不要求 sys_role_menu 逐条授权。
 func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 	var menus []*SysMenu
+	var err error
 
-	// 用户 → 角色 → 菜单
-	err := global.GNA_DB.Unscoped().
-		Table("sys_user_role ur").
-		Select("DISTINCT m.*").
-		Joins("JOIN sys_role_menu rm ON ur.sys_role_id = rm.sys_role_id").
-		Joins("JOIN sys_menu m ON rm.sys_menu_id = m.id").
-		Where("ur.sys_user_id = ? AND m.status = 1 AND m.type IN (0, 1)", userId).
-		Order("m.sort ASC").
-		Find(&menus).Error
+	if isMenuSuperUser(userId) {
+		err = global.GNA_DB.Where("status = ? AND type IN ?", 1, []string{"0", "1"}).Order("sort ASC").Find(&menus).Error
+	} else {
+		// 用户 → 角色 → 菜单
+		err = global.GNA_DB.Unscoped().
+			Table("sys_user_role ur").
+			Select("DISTINCT m.*").
+			Joins("JOIN sys_role_menu rm ON ur.sys_role_id = rm.sys_role_id").
+			Joins("JOIN sys_menu m ON rm.sys_menu_id = m.id").
+			Where("ur.sys_user_id = ? AND m.status = 1 AND m.type IN (0, 1)", userId).
+			Order("m.sort ASC").
+			Find(&menus).Error
+	}
 
 	if err != nil {
 		global.GNA_LOG.Error("获取用户菜单失败: " + err.Error())
