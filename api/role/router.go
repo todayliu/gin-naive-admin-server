@@ -11,6 +11,9 @@ func (r *_roleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	roleRouter := Router.Group("role")
 	{
 		roleRouter.GET("list", RoleService.GetRoleList)
+		roleRouter.GET("export", RoleService.ExportRoles)
+		roleRouter.GET("import-template", RoleService.DownloadRoleImportTemplate)
+		roleRouter.POST("import", RoleService.ImportRoles)
 		roleRouter.POST("add", RoleService.AddRole)
 		roleRouter.GET("query/:id", RoleService.QueryRole)
 		roleRouter.PUT("edit", RoleService.EditRole)

@@ -17,8 +17,13 @@ func (SysJobLevel) TableName() string {
 	return "sys_job_level"
 }
 
+// PositionListFilters 职务列表/导出共用的查询条件（不含分页）
+type PositionListFilters struct {
+	LevelName string `form:"levelName"` // 按名称模糊查询
+}
+
 // PositionPageRequest 职务级别分页查询请求
 type PositionPageRequest struct {
 	page_info.PageInfo
-	LevelName string `form:"levelName"` // 按名称模糊查询
+	PositionListFilters
 }

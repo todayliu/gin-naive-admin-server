@@ -11,6 +11,9 @@ func (r *_positionRouter) InitPositionRouter(Router *gin.RouterGroup) {
 	g := Router.Group("position")
 	{
 		g.GET("list", PositionService.GetPositionList)
+		g.GET("export", PositionService.ExportPositions)
+		g.GET("import-template", PositionService.DownloadPositionImportTemplate)
+		g.POST("import", PositionService.ImportPositions)
 		g.GET("query/:id", PositionService.QueryPosition)
 		g.POST("add", PositionService.AddPosition)
 		g.PUT("edit", PositionService.EditPosition)

@@ -35,6 +35,7 @@ func buildRoutePermMap(prefix string) map[string]string {
 	}
 
 	// 部门（列表 GET 不校验权限码，仅 JWT；下同）
+	put("GET", "/department/export", "system:department:export")
 	put("PUT", "/department/edit", "system:department:edit")
 	put("DELETE", "/department/delete/:id", "system:department:delete")
 
@@ -49,6 +50,9 @@ func buildRoutePermMap(prefix string) map[string]string {
 	put("DELETE", "/user/delete/:id", "system:user:delete")
 
 	// 角色
+	put("GET", "/role/export", "system:role:export")
+	put("GET", "/role/import-template", "system:role:import")
+	put("POST", "/role/import", "system:role:import")
 	put("POST", "/role/add", "system:role:add")
 	put("GET", "/role/query/:id", "system:role:query")
 	put("PUT", "/role/edit", "system:role:edit")
@@ -70,6 +74,9 @@ func buildRoutePermMap(prefix string) map[string]string {
 	put("DELETE", "/dict/data/delete/:id", "system:dict:data:delete")
 
 	// 职务
+	put("GET", "/position/export", "system:position:export")
+	put("GET", "/position/import-template", "system:position:import")
+	put("POST", "/position/import", "system:position:import")
 	put("GET", "/position/query/:id", "system:position:query")
 	put("POST", "/position/add", "system:position:add")
 	put("PUT", "/position/edit", "system:position:edit")
@@ -83,6 +90,9 @@ func buildRoutePermMap(prefix string) map[string]string {
 	// 日志（列表 GET 不校验权限码）
 
 	// 参数配置
+	put("GET", "/config/export", "system:config:export")
+	put("GET", "/config/import-template", "system:config:import")
+	put("POST", "/config/import", "system:config:import")
 	put("POST", "/config/add", "system:config:add")
 	put("PUT", "/config/edit", "system:config:edit")
 

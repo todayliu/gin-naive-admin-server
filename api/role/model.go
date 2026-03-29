@@ -25,12 +25,17 @@ func (SysRole) TableName() string {
 	return "sys_role"
 }
 
-// RolePageRequest 角色分页查询请求
-type RolePageRequest struct {
-	page_info.PageInfo
+// RoleListFilters 角色列表/导出共用的查询条件（不含分页；导出接口只绑定此结构）
+type RoleListFilters struct {
 	Name   string `form:"name"`
 	Code   string `form:"code"`
 	Status *uint  `form:"status"`
+}
+
+// RolePageRequest 角色分页查询请求
+type RolePageRequest struct {
+	page_info.PageInfo
+	RoleListFilters
 }
 
 // PowerResponse 角色权限树响应

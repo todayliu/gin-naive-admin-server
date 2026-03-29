@@ -11,6 +11,7 @@ func (r *_departmentRouter) InitDepartmentRouter(Router *gin.RouterGroup) {
 	departmentRouter := Router.Group("department")
 	{
 		departmentRouter.GET("list", DepartmentService.GetDepartmentList)
+		departmentRouter.GET("export", DepartmentService.ExportDepartmentPaths)
 		departmentRouter.PUT("edit", DepartmentService.UpdateDepartment)
 		departmentRouter.DELETE("delete/:id", DepartmentService.DeleteDepartment)
 	}

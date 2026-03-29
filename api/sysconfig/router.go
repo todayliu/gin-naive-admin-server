@@ -15,6 +15,9 @@ func (r *_sysConfigRouter) InitSysConfigRouter(Router *gin.RouterGroup) {
 	g := Router.Group("config")
 	{
 		g.GET("list", SysConfigService.List)
+		g.GET("export", SysConfigService.ExportConfigs)
+		g.GET("import-template", SysConfigService.DownloadConfigImportTemplate)
+		g.POST("import", SysConfigService.ImportConfigs)
 		g.POST("add", SysConfigService.Add)
 		g.PUT("edit", SysConfigService.Edit)
 	}
