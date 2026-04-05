@@ -44,7 +44,7 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 	var menus []*SysMenu
 	var err error
 
-	if isMenuSuperUser(userId) {
+	if IsSuperUser(userId) {
 		err = global.GNA_DB.Where("status = ? AND type IN ?", 1, []string{"0", "1"}).Order("sort ASC").Find(&menus).Error
 	} else {
 		// 用户 → 角色 → 菜单

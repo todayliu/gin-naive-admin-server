@@ -19,12 +19,11 @@ router:
   router-prefix: "/api"
   path: "uploads/file"
 
-# 安全：接口权限与数据范围
+# 安全
 security:
   super-role-codes:
     - admin
   relax-api-auth: false
-  data-scope-enabled: true
 
 # 数据库配置
 database:

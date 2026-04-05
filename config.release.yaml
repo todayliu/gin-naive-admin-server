@@ -23,7 +23,6 @@ security:
   super-role-codes:
     - admin
   relax-api-auth: false
-  data-scope-enabled: true
 
 # 数据库配置
 database:

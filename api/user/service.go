@@ -5,9 +5,7 @@ import (
 	"encoding/hex"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
-	"gin-admin-server/permission"
 	"gin-admin-server/utils"
-	"gin-admin-server/utils/jwt_util"
 	"gin-admin-server/utils/validator"
 	"strconv"
 	"strings"
@@ -29,7 +27,7 @@ func hashPasswordForStorage(plainPassword string) string {
 
 // GetUserList 分页查询用户列表
 // @Summary     用户分页列表
-// @Description 开启数据范围时非超管仅看自己及所辖部门用户。
+// @Description 分页列表；筛选条件见 query 参数。
 // @Tags        用户
 // @Produce     json
 // @Security    AccessToken
@@ -112,17 +110,6 @@ func buildUserListQuery(c *gin.Context, filters *UserListFilters) *gorm.DB {
 		}
 	}
 
-	uid := jwt_util.GetUserID(c)
-	if global.GNA_CONFIG.Security.DataScopeEnabled && uid > 0 && !permission.IsSuperUser(uid) {
-		scope := ScopedDepartmentIDs(uid)
-		if len(scope) == 0 {
-			db = db.Where("sys_user.id = ?", uid)
-		} else {
-			db = db.Where(`sys_user.id = ? OR sys_user.department_id IN ? OR EXISTS (
-				SELECT 1 FROM sys_user_department sud WHERE sud.sys_user_id = sys_user.id AND sud.sys_department_id IN ?
-			)`, uid, scope, scope)
-		}
-	}
 	return db
 }
 

@@ -7,7 +7,6 @@ import (
 	"gin-admin-server/api/user"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
-	"gin-admin-server/permission"
 	"gin-admin-server/utils"
 	"gin-admin-server/utils/jwt_util"
 	"gin-admin-server/utils/validator"
@@ -38,7 +37,7 @@ func (s *_profileService) GetInfo(c *gin.Context) {
 		response.FailWithMessage("用户不存在", c)
 		return
 	}
-	roleCodes, _ := permission.LoadUserRoleCodes(uid)
+	roleCodes, _ := user.LoadUserRoleCodes(uid)
 	response.OkWithData(map[string]interface{}{
 		"id":            u.ID,
 		"createTime":    u.CreateTime,

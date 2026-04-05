@@ -5,9 +5,8 @@ import (
 	"strings"
 )
 
-// isMenuSuperUser 与 permission.IsSuperUser 规则一致（admin + 配置 super-role-codes）。
-// 单独放在 menu 包，避免 menu → permission → menu 循环依赖。
-func isMenuSuperUser(userID uint) bool {
+// IsSuperUser 是否拥有超级角色（admin 或配置中的 super-role-codes）；用于菜单、数据范围、中间件等。
+func IsSuperUser(userID uint) bool {
 	codes := resolvedMenuSuperRoleCodes()
 	var n int64
 	err := global.GNA_DB.Table("sys_user_role ur").
