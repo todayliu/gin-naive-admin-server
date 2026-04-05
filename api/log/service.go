@@ -114,6 +114,7 @@ func (s *_logService) GetLoginLogList(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(response.PageResult{
 		List:     list,
 		Total:    total,
@@ -160,6 +161,7 @@ func (s *_logService) GetOperLogList(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(response.PageResult{
 		List:     list,
 		Total:    total,

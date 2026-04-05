@@ -30,7 +30,7 @@ var MenuService = new(_menuService)
 // @Router      /menu/router [get]
 func (ms *_menuService) InitMenuList(c *gin.Context) {
 	userId := jwt_util.GetUserID(c)
-	routes, err := ms.GetMenuList(userId)
+	routes, err := ms.GetMenuList(c, userId)
 	if err != nil {
 		response.FailWithMessage("获取用户菜单失败", c)
 		return
@@ -41,15 +41,15 @@ func (ms *_menuService) InitMenuList(c *gin.Context) {
 
 // GetMenuList 根据用户ID获取其可访问的菜单树（用户→角色→菜单）
 // 超级管理员：返回库中全部启用目录/页面（type 0、1），与「全部接口权限码」一致，不要求 sys_role_menu 逐条授权。
-func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
+func (ms *_menuService) GetMenuList(c *gin.Context, userId uint) ([]MenuResponse, error) {
 	var menus []*SysMenu
 	var err error
 
 	if IsSuperUser(userId) {
-		err = global.GNA_DB.Where("status = ? AND type IN ?", 1, []string{"0", "1"}).Order("sort ASC").Find(&menus).Error
+		err = dbctx.Use(c).Where("status = ? AND type IN ?", 1, []string{"0", "1"}).Order("sort ASC").Find(&menus).Error
 	} else {
 		// 用户 → 角色 → 菜单
-		err = global.GNA_DB.Unscoped().
+		err = dbctx.Use(c).Unscoped().
 			Table("sys_user_role ur").
 			Select("DISTINCT m.*").
 			Joins("JOIN sys_role_menu rm ON ur.sys_role_id = rm.sys_role_id").
@@ -63,6 +63,7 @@ func (ms *_menuService) GetMenuList(userId uint) ([]MenuResponse, error) {
 		global.GNA_LOG.Error("获取用户菜单失败: " + err.Error())
 		return nil, err
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &menus)
 	menuTree := ms.BuildMenuTree(menus, 0)
 
 	var routes []MenuResponse
@@ -103,6 +104,10 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 		Sort:      menu.Sort,
 		Status:    menu.Status,
 		Perms:     menu.Perms,
+		CreateBy:     menu.CreateBy,
+		UpdateBy:     menu.UpdateBy,
+		CreateByName: menu.CreateByName,
+		UpdateByName: menu.UpdateByName,
 		Meta: MenuMeta{
 			Title:                menu.Title,
 			Icon:                 menu.Icon,
@@ -150,6 +155,7 @@ func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 		return
 	}
 
+	global.FillAuditDisplayNames(dbctx.Use(c), &menus)
 	menuTree := ms.BuildMenuTree(menus, 0)
 
 	response.OkWithData(menuTree, c)

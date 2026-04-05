@@ -58,6 +58,7 @@ func (d *_dictService) GetDictTypeList(c *gin.Context) {
 		response.FailWithMessage("获取字典类型列表失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(response.PageResult{
 		List:     list,
 		Total:    total,
@@ -226,6 +227,7 @@ func (d *_dictService) GetDictDataList(c *gin.Context) {
 		response.FailWithMessage("获取字典数据列表失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(response.PageResult{
 		List:     list,
 		Total:    total,
@@ -363,5 +365,6 @@ func (d *_dictService) GetDictByType(c *gin.Context) {
 		response.FailWithMessage("获取字典数据失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(list, c)
 }

@@ -77,6 +77,7 @@ func (s *_sysConfigService) List(c *gin.Context) {
 		response.FailWithMessage("查询失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(list, c)
 }
 

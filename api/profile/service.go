@@ -38,11 +38,16 @@ func (s *_profileService) GetInfo(c *gin.Context) {
 		response.FailWithMessage("用户不存在", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &u)
 	roleCodes, _ := user.LoadUserRoleCodes(uid)
 	response.OkWithData(map[string]interface{}{
 		"id":            u.ID,
 		"createTime":    u.CreateTime,
 		"updateTime":    u.UpdateTime,
+		"createBy":      u.CreateBy,
+		"updateBy":      u.UpdateBy,
+		"createByName":  u.CreateByName,
+		"updateByName":  u.UpdateByName,
 		"account":       u.Account,
 		"uName":         u.UName,
 		"uNickname":     u.UNickname,

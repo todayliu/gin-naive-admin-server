@@ -28,6 +28,7 @@ func (ds *_departmentService) GetDepartmentList(c *gin.Context) {
 		response.FailWithMessage("获取部门列表失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(list, c)
 }
 

@@ -49,6 +49,11 @@ type MenuResponse struct {
 	Status    uint           `json:"status"`
 	Meta      MenuMeta       `json:"meta"`
 	Children  []MenuResponse `json:"children"`
+	// 与 GNA_MODEL 审计字段一致，供前端按需展示
+	CreateBy     uint   `json:"createBy,omitempty"`
+	UpdateBy     uint   `json:"updateBy,omitempty"`
+	CreateByName string `json:"createByName,omitempty"`
+	UpdateByName string `json:"updateByName,omitempty"`
 }
 
 // MenuMeta 菜单元信息

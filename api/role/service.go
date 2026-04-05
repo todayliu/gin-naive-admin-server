@@ -56,6 +56,12 @@ func (r *_roleService) GetRoleList(c *gin.Context) {
 	offset := roleRequest.PageSize * (roleRequest.PageNo - 1)
 
 	err = db.Limit(limit).Offset(offset).Order("create_time desc").Find(&list).Error
+	if err != nil {
+		global.GNA_LOG.Error("获取角色列表失败：" + err.Error())
+		response.FailWithMessage("获取角色列表失败", c)
+		return
+	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 
 	response.OkWithData(response.PageResult{
 		List:     list,
@@ -115,6 +121,7 @@ func (r *_roleService) QueryRole(c *gin.Context) {
 		return
 	}
 
+	global.FillAuditDisplayNames(dbctx.Use(c), &sysRole)
 	response.OkWithData(sysRole, c)
 }
 

@@ -69,6 +69,8 @@ func (us *_userService) GetUserList(c *gin.Context) {
 		return
 	}
 
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
+
 	response.OkWithData(response.PageResult{
 		List:     list,
 		Total:    total,
@@ -151,10 +153,16 @@ func (us *_userService) QueryUser(c *gin.Context) {
 		positionIds = []uint{sysUser.JobLevelID}
 	}
 
+	global.FillAuditDisplayNames(dbctx.Use(c), &sysUser)
+
 	resp := map[string]interface{}{
 		"id":            sysUser.ID,
 		"createTime":    sysUser.CreateTime,
 		"updateTime":    sysUser.UpdateTime,
+		"createBy":      sysUser.CreateBy,
+		"updateBy":      sysUser.UpdateBy,
+		"createByName":  sysUser.CreateByName,
+		"updateByName":  sysUser.UpdateByName,
 		"account":       sysUser.Account,
 		"uName":         sysUser.UName,
 		"uNickname":     sysUser.UNickname,

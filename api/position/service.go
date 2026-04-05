@@ -50,6 +50,7 @@ func (s *_positionService) GetPositionList(c *gin.Context) {
 		response.FailWithMessage("获取职务级别列表失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &list)
 	response.OkWithData(response.PageResult{
 		List:     list,
 		Total:    total,
@@ -79,6 +80,7 @@ func (s *_positionService) QueryPosition(c *gin.Context) {
 		response.FailWithMessage("查询职务级别失败", c)
 		return
 	}
+	global.FillAuditDisplayNames(dbctx.Use(c), &row)
 	response.OkWithData(row, c)
 }
 

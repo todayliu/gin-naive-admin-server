@@ -153,6 +153,8 @@ func (ls *_LoginService) CreateToken(c *gin.Context, userInfo user.SysUser) {
 
 	roles := loadUserRoleCodes(userInfo.ID)
 
+	global.FillAuditDisplayNames(db, &userInfo)
+
 	response.OkWithDetailed(LoginResponse{
 		UserInfo:  userInfo,
 		Token:     token,
