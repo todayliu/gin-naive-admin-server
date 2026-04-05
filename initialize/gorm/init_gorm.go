@@ -1,7 +1,6 @@
 package gorm
 
 import (
-	"gin-admin-server/api/demo_dict"
 	"gin-admin-server/api/department"
 	"gin-admin-server/api/devform"
 	"gin-admin-server/api/dict"
@@ -63,7 +62,6 @@ func RegisterTables() {
 		sysconfig.SysConfig{},
 		devform.SysOnlineForm{},
 		devform.SysOnlineFormField{},
-		demo_dict.DemoDict{},
 	)
 	if err != nil {
 		global.GNA_LOG.Error("注册数据表失败", zap.Error(err))

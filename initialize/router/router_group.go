@@ -2,7 +2,6 @@ package router
 
 import (
 	"gin-admin-server/api/dashboard"
-	"gin-admin-server/api/demo_dict"
 	"gin-admin-server/api/department"
 	"gin-admin-server/api/devform"
 	"gin-admin-server/api/dict"
@@ -62,5 +61,4 @@ func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {
 	menu.MenuRouter.InitMenuRouter(PrivateGroup)
 	role.RoleRouter.InitRoleRouter(PrivateGroup)
 	user.UserRouter.InitUserRouter(PrivateGroup)
-	demo_dict.DemoDictRouter.InitDemoDictRouter(PrivateGroup)
 }
