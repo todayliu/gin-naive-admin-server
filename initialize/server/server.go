@@ -30,12 +30,14 @@ func RunServer() {
 	time.Sleep(10 * time.Microsecond)
 	global.GNA_LOG.Info("server run success on ", zap.String("address", port))
 
-	fmt.Printf(`
+	const colorBlue = "\033[1;34m" // 粗体蓝色，便于在终端辨认
+	const colorReset = "\033[0m"
+	fmt.Printf(colorBlue+`
 		欢迎使用 gin-naive-admin
 		当前版本:v1.0.0
 		服务启动成功:http://127.0.0.1%s
 		Swagger 文档:http://127.0.0.1%s/swagger/index.html
-	`, port, port)
+	`+colorReset, port, port)
 	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		global.GNA_LOG.Error("服务异常退出", zap.Error(err))
 	}

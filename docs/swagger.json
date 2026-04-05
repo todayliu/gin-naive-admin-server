@@ -1002,7 +1002,7 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "data.codes 为权限字符串数组，与前端 v-permission 一致。",
+                "description": "data.codes 来自 sys_menu.perms，与前端 hasPerm 一致。",
                 "produces": [
                     "application/json"
                 ],
@@ -1688,7 +1688,7 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "开启数据范围时非超管仅看自己及所辖部门用户。",
+                "description": "分页列表；筛选条件见 query 参数。",
                 "produces": [
                     "application/json"
                 ],
