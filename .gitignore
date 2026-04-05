@@ -31,4 +31,5 @@ go.work.sum
  .idea/
  .vscode/
 
-log/
+# 仅忽略仓库根目录下的 log 目录（运行日志等），勿用 log/ 否则会误忽略 api/log 源码
+/log/
