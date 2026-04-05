@@ -3,6 +3,7 @@ package department
 import (
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ var DepartmentService = new(_departmentService)
 // @Router      /department/list [get]
 func (ds *_departmentService) GetDepartmentList(c *gin.Context) {
 	var list []*SysDepartment
-	err := global.GNA_DB.Order("parent_id ASC, sort ASC").Find(&list).Error
+	err := dbctx.Use(c).Order("parent_id ASC, sort ASC").Find(&list).Error
 	if err != nil {
 		global.GNA_LOG.Error("获取部门列表失败: " + err.Error())
 		response.FailWithMessage("获取部门列表失败", c)
@@ -49,7 +50,7 @@ func (ds *_departmentService) UpdateDepartment(c *gin.Context) {
 		return
 	}
 
-	err = global.GNA_DB.Save(&dept).Error
+	err = dbctx.Use(c).Save(&dept).Error
 	if err != nil {
 		global.GNA_LOG.Error("部门保存失败：" + err.Error())
 		response.FailWithMessage("部门保存失败", c)
@@ -76,13 +77,13 @@ func (ds *_departmentService) DeleteDepartment(c *gin.Context) {
 
 	// 检查是否有子部门
 	var count int64
-	global.GNA_DB.Model(&SysDepartment{}).Where("parent_id = ?", id).Count(&count)
+	dbctx.Use(c).Model(&SysDepartment{}).Where("parent_id = ?", id).Count(&count)
 	if count > 0 {
 		response.FailWithMessage("存在子部门，无法删除", c)
 		return
 	}
 
-	err := global.GNA_DB.Where("id = ?", id).Delete(&SysDepartment{}).Error
+	err := dbctx.Use(c).Where("id = ?", id).Delete(&SysDepartment{}).Error
 	if err != nil {
 		global.GNA_LOG.Error("删除部门失败：" + err.Error())
 		response.FailWithMessage("删除部门失败", c)

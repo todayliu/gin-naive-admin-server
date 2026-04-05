@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils"
 	"gin-admin-server/utils/validator"
 	"strconv"
@@ -78,7 +79,7 @@ func (us *_userService) GetUserList(c *gin.Context) {
 
 // buildUserListQuery 列表/导出共用的筛选与数据范围（不含分页、排序）
 func buildUserListQuery(c *gin.Context, filters *UserListFilters) *gorm.DB {
-	db := global.GNA_DB.Model(&SysUser{})
+	db := dbctx.Use(c).Model(&SysUser{})
 
 	if filters.Username != "" {
 		db = db.Where("account LIKE ?", "%"+strings.TrimSpace(filters.Username)+"%")
@@ -128,7 +129,7 @@ func (us *_userService) QueryUser(c *gin.Context) {
 		return
 	}
 	var sysUser SysUser
-	err := global.GNA_DB.Where("id = ?", id).First(&sysUser).Error
+	err := dbctx.Use(c).Where("id = ?", id).First(&sysUser).Error
 	if err != nil {
 		global.GNA_LOG.Error("用户查询失败：" + err.Error())
 		response.FailWithMessage("用户查询失败", c)
@@ -136,16 +137,16 @@ func (us *_userService) QueryUser(c *gin.Context) {
 	}
 
 	var roleIds []uint
-	_ = global.GNA_DB.Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
+	_ = dbctx.Use(c).Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
 
 	var departmentIds []uint
-	_ = global.GNA_DB.Model(&SysUserDepartment{}).Where("sys_user_id = ?", id).Order("sys_department_id").Pluck("sys_department_id", &departmentIds)
+	_ = dbctx.Use(c).Model(&SysUserDepartment{}).Where("sys_user_id = ?", id).Order("sys_department_id").Pluck("sys_department_id", &departmentIds)
 	if len(departmentIds) == 0 && sysUser.DepartmentId > 0 {
 		departmentIds = []uint{sysUser.DepartmentId}
 	}
 
 	var positionIds []uint
-	_ = global.GNA_DB.Model(&SysUserJobLevel{}).Where("sys_user_id = ?", id).Order("sys_job_level_id").Pluck("sys_job_level_id", &positionIds)
+	_ = dbctx.Use(c).Model(&SysUserJobLevel{}).Where("sys_user_id = ?", id).Order("sys_job_level_id").Pluck("sys_job_level_id", &positionIds)
 	if len(positionIds) == 0 && sysUser.JobLevelID > 0 {
 		positionIds = []uint{sysUser.JobLevelID}
 	}
@@ -186,7 +187,7 @@ func (us *_userService) GetUserRoles(c *gin.Context) {
 		return
 	}
 	var roleIds []uint
-	result := global.GNA_DB.Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
+	result := dbctx.Use(c).Table("sys_user_role").Where("sys_user_id = ?", id).Pluck("sys_role_id", &roleIds)
 	if result.Error != nil {
 		global.GNA_LOG.Error("查询用户角色失败", zap.Error(result.Error))
 		response.FailWithMessage("查询用户角色失败", c)
@@ -214,7 +215,7 @@ func (us *_userService) AddUser(c *gin.Context) {
 	}
 
 	var existUser SysUser
-	err = global.GNA_DB.Where("account = ?", req.Account).First(&existUser).Error
+	err = dbctx.Use(c).Where("account = ?", req.Account).First(&existUser).Error
 	if err == nil {
 		response.FailWithMessage("用户账号已存在", c)
 		return
@@ -255,7 +256,7 @@ func (us *_userService) AddUser(c *gin.Context) {
 		JobLevelID:   primaryJobLevel,
 	}
 
-	err = global.GNA_DB.Create(&user).Error
+	err = dbctx.Use(c).Create(&user).Error
 	if err != nil {
 		global.GNA_LOG.Error("添加用户失败：" + err.Error())
 		response.FailWithMessage("添加用户失败", c)
@@ -265,7 +266,7 @@ func (us *_userService) AddUser(c *gin.Context) {
 	// 设置用户部门关联
 	if len(deptIds) > 0 {
 		for _, deptId := range deptIds {
-			if err := global.GNA_DB.Create(&SysUserDepartment{SysUserID: user.ID, SysDepartmentID: deptId}).Error; err != nil {
+			if err := dbctx.Use(c).Create(&SysUserDepartment{SysUserID: user.ID, SysDepartmentID: deptId}).Error; err != nil {
 				global.GNA_LOG.Error("设置用户部门失败：" + err.Error())
 				break
 			}
@@ -275,7 +276,7 @@ func (us *_userService) AddUser(c *gin.Context) {
 	// 设置用户角色关联
 	if len(req.RoleIds) > 0 {
 		for _, roleId := range req.RoleIds {
-			if err := global.GNA_DB.Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", user.ID, roleId).Error; err != nil {
+			if err := dbctx.Use(c).Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", user.ID, roleId).Error; err != nil {
 				global.GNA_LOG.Error("设置用户角色失败：" + err.Error())
 				break
 			}
@@ -285,7 +286,7 @@ func (us *_userService) AddUser(c *gin.Context) {
 	// 设置用户职务关联（多选）
 	if len(req.PositionIDs) > 0 {
 		for _, jlID := range req.PositionIDs {
-			if err := global.GNA_DB.Create(&SysUserJobLevel{SysUserID: user.ID, SysJobLevelID: jlID}).Error; err != nil {
+			if err := dbctx.Use(c).Create(&SysUserJobLevel{SysUserID: user.ID, SysJobLevelID: jlID}).Error; err != nil {
 				global.GNA_LOG.Error("设置用户职务失败：" + err.Error())
 				break
 			}
@@ -344,7 +345,7 @@ func (us *_userService) EditUser(c *gin.Context) {
 		updates["password"] = hashPasswordForStorage(req.Password)
 	}
 
-	err = global.GNA_DB.Model(&SysUser{}).Where("id = ?", req.ID).Updates(updates).Error
+	err = dbctx.Use(c).Model(&SysUser{}).Where("id = ?", req.ID).Updates(updates).Error
 	if err != nil {
 		global.GNA_LOG.Error("修改用户失败：" + err.Error())
 		response.FailWithMessage("修改用户失败", c)
@@ -353,11 +354,11 @@ func (us *_userService) EditUser(c *gin.Context) {
 
 	// 更新用户部门关联
 	if req.DepartmentIds != nil || req.DepartmentId > 0 {
-		if err := global.GNA_DB.Where("sys_user_id = ?", req.ID).Delete(&SysUserDepartment{}).Error; err != nil {
+		if err := dbctx.Use(c).Where("sys_user_id = ?", req.ID).Delete(&SysUserDepartment{}).Error; err != nil {
 			global.GNA_LOG.Error("清除用户部门失败：" + err.Error())
 		}
 		for _, deptId := range deptIds {
-			if err := global.GNA_DB.Create(&SysUserDepartment{SysUserID: req.ID, SysDepartmentID: deptId}).Error; err != nil {
+			if err := dbctx.Use(c).Create(&SysUserDepartment{SysUserID: req.ID, SysDepartmentID: deptId}).Error; err != nil {
 				global.GNA_LOG.Error("设置用户部门失败：" + err.Error())
 				break
 			}
@@ -366,13 +367,13 @@ func (us *_userService) EditUser(c *gin.Context) {
 
 	// 更新用户角色关联
 	if req.RoleIds != nil {
-		if err := global.GNA_DB.Exec("DELETE FROM sys_user_role WHERE sys_user_id = ?", req.ID).Error; err != nil {
+		if err := dbctx.Use(c).Exec("DELETE FROM sys_user_role WHERE sys_user_id = ?", req.ID).Error; err != nil {
 			global.GNA_LOG.Error("清除用户角色失败：" + err.Error())
 			response.FailWithMessage("修改用户失败", c)
 			return
 		}
 		for _, roleId := range req.RoleIds {
-			if err := global.GNA_DB.Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", req.ID, roleId).Error; err != nil {
+			if err := dbctx.Use(c).Exec("INSERT INTO sys_user_role (sys_user_id, sys_role_id) VALUES (?, ?)", req.ID, roleId).Error; err != nil {
 				global.GNA_LOG.Error("设置用户角色失败：" + err.Error())
 				response.FailWithMessage("修改用户失败", c)
 				return
@@ -382,11 +383,11 @@ func (us *_userService) EditUser(c *gin.Context) {
 
 	// 更新用户职务关联（多选）
 	if req.PositionIDs != nil {
-		if err := global.GNA_DB.Where("sys_user_id = ?", req.ID).Delete(&SysUserJobLevel{}).Error; err != nil {
+		if err := dbctx.Use(c).Where("sys_user_id = ?", req.ID).Delete(&SysUserJobLevel{}).Error; err != nil {
 			global.GNA_LOG.Error("清除用户职务失败：" + err.Error())
 		}
 		for _, jlID := range req.PositionIDs {
-			if err := global.GNA_DB.Create(&SysUserJobLevel{SysUserID: req.ID, SysJobLevelID: jlID}).Error; err != nil {
+			if err := dbctx.Use(c).Create(&SysUserJobLevel{SysUserID: req.ID, SysJobLevelID: jlID}).Error; err != nil {
 				global.GNA_LOG.Error("设置用户职务失败：" + err.Error())
 				break
 			}
@@ -411,7 +412,7 @@ func (us *_userService) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+	err := dbctx.Use(c).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Exec("DELETE FROM sys_user_role WHERE sys_user_id = ?", id).Error; err != nil {
 			return err
 		}

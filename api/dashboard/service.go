@@ -6,8 +6,8 @@ import (
 	"gin-admin-server/api/menu"
 	"gin-admin-server/api/role"
 	"gin-admin-server/api/user"
-	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,11 +25,11 @@ var DashboardService = new(_dashboardService)
 // @Router      /dashboard/stats [get]
 func (s *_dashboardService) Stats(c *gin.Context) {
 	var userCount, roleCount, menuCount, deptCount, dictTypeCount int64
-	_ = global.GNA_DB.Model(&user.SysUser{}).Count(&userCount).Error
-	_ = global.GNA_DB.Model(&role.SysRole{}).Count(&roleCount).Error
-	_ = global.GNA_DB.Model(&menu.SysMenu{}).Count(&menuCount).Error
-	_ = global.GNA_DB.Model(&department.SysDepartment{}).Count(&deptCount).Error
-	_ = global.GNA_DB.Model(&dict.SysDictType{}).Count(&dictTypeCount).Error
+	_ = dbctx.Use(c).Model(&user.SysUser{}).Count(&userCount).Error
+	_ = dbctx.Use(c).Model(&role.SysRole{}).Count(&roleCount).Error
+	_ = dbctx.Use(c).Model(&menu.SysMenu{}).Count(&menuCount).Error
+	_ = dbctx.Use(c).Model(&department.SysDepartment{}).Count(&deptCount).Error
+	_ = dbctx.Use(c).Model(&dict.SysDictType{}).Count(&dictTypeCount).Error
 	response.OkWithData(gin.H{
 		"userCount":     userCount,
 		"roleCount":     roleCount,

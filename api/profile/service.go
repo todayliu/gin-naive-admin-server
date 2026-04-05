@@ -7,6 +7,7 @@ import (
 	"gin-admin-server/api/user"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils"
 	"gin-admin-server/utils/jwt_util"
 	"gin-admin-server/utils/validator"
@@ -33,7 +34,7 @@ func (s *_profileService) GetInfo(c *gin.Context) {
 		return
 	}
 	var u user.SysUser
-	if err := global.GNA_DB.Where("id = ?", uid).First(&u).Error; err != nil {
+	if err := dbctx.Use(c).Where("id = ?", uid).First(&u).Error; err != nil {
 		response.FailWithMessage("用户不存在", c)
 		return
 	}
@@ -77,7 +78,7 @@ func (s *_profileService) UpdateInfo(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	err := global.GNA_DB.Model(&user.SysUser{}).Where("id = ?", uid).Updates(map[string]interface{}{
+	err := dbctx.Use(c).Model(&user.SysUser{}).Where("id = ?", uid).Updates(map[string]interface{}{
 		"u_nickname": req.UNickname,
 		"u_mobile":   req.UMobile,
 		"u_email":    req.UEmail,
@@ -113,7 +114,7 @@ func (s *_profileService) UpdatePassword(c *gin.Context) {
 		return
 	}
 	var u user.SysUser
-	if err := global.GNA_DB.Where("id = ?", uid).First(&u).Error; err != nil {
+	if err := dbctx.Use(c).Where("id = ?", uid).First(&u).Error; err != nil {
 		response.FailWithMessage("用户不存在", c)
 		return
 	}
@@ -126,7 +127,7 @@ func (s *_profileService) UpdatePassword(c *gin.Context) {
 		return
 	}
 	newStored := hashStoredPassword(req.NewPassword)
-	if err := global.GNA_DB.Model(&user.SysUser{}).Where("id = ?", uid).Update("password", newStored).Error; err != nil {
+	if err := dbctx.Use(c).Model(&user.SysUser{}).Where("id = ?", uid).Update("password", newStored).Error; err != nil {
 		response.FailWithMessage("修改密码失败", c)
 		return
 	}

@@ -12,6 +12,7 @@ import (
 	"gin-admin-server/api/dict"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -73,8 +74,8 @@ func parseUintOrDictLabel(s string, typeCode string) (uint64, error) {
 	return strconv.ParseUint(strings.TrimSpace(row.Value), 10, 32)
 }
 
-func buildRoleExportQuery(filters *RoleListFilters) *gorm.DB {
-	db := global.GNA_DB.Model(&SysRole{})
+func buildRoleExportQuery(c *gin.Context, filters *RoleListFilters) *gorm.DB {
+	db := dbctx.Use(c).Model(&SysRole{})
 	if filters.Name != "" {
 		db = db.Where("name LIKE ?", "%"+filters.Name+"%")
 	}
@@ -96,7 +97,7 @@ func (r *_roleService) ExportRoles(c *gin.Context) {
 		return
 	}
 	var list []SysRole
-	if err := buildRoleExportQuery(&filters).Order("create_time desc").Limit(roleExportMaxRows).Find(&list).Error; err != nil {
+	if err := buildRoleExportQuery(c, &filters).Order("create_time desc").Limit(roleExportMaxRows).Find(&list).Error; err != nil {
 		global.GNA_LOG.Error("导出角色失败", zap.Error(err))
 		response.FailWithMessage("导出角色失败", c)
 		return
@@ -304,7 +305,7 @@ func (r *_roleService) ImportRoles(c *gin.Context) {
 		st := uint(statusVal)
 
 		var exist SysRole
-		if err := global.GNA_DB.Where("code = ?", code).First(&exist).Error; err == nil {
+		if err := dbctx.Use(c).Where("code = ?", code).First(&exist).Error; err == nil {
 			result.SkipCount++
 			continue
 		} else if err != gorm.ErrRecordNotFound {
@@ -322,7 +323,7 @@ func (r *_roleService) ImportRoles(c *gin.Context) {
 			Description: description,
 			Status:      &st,
 		}
-		if err := global.GNA_DB.Create(&role).Error; err != nil {
+		if err := dbctx.Use(c).Create(&role).Error; err != nil {
 			global.GNA_LOG.Error("导入角色失败", zap.Error(err))
 			result.FailCount++
 			if len(result.Errors) < maxErr {

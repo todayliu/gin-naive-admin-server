@@ -3,6 +3,7 @@ package position
 import (
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func (s *_positionService) GetPositionList(c *gin.Context) {
 		response.FailWithMessage(errMessage, c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysJobLevel{})
+	db := dbctx.Use(c).Model(&SysJobLevel{})
 	if req.LevelName != "" {
 		db = db.Where("level_name LIKE ?", "%"+req.LevelName+"%")
 	}
@@ -72,7 +73,7 @@ func (s *_positionService) QueryPosition(c *gin.Context) {
 		return
 	}
 	var row SysJobLevel
-	err := global.GNA_DB.Where("id = ?", id).First(&row).Error
+	err := dbctx.Use(c).Where("id = ?", id).First(&row).Error
 	if err != nil {
 		global.GNA_LOG.Error("查询职务级别失败：" + err.Error())
 		response.FailWithMessage("查询职务级别失败", c)
@@ -98,7 +99,7 @@ func (s *_positionService) AddPosition(c *gin.Context) {
 		response.FailWithMessage(errMessage, c)
 		return
 	}
-	err = global.GNA_DB.Create(&row).Error
+	err = dbctx.Use(c).Create(&row).Error
 	if err != nil {
 		global.GNA_LOG.Error("新增职务级别失败：" + err.Error())
 		response.FailWithMessage("新增职务级别失败", c)
@@ -128,7 +129,7 @@ func (s *_positionService) EditPosition(c *gin.Context) {
 		response.FailWithMessage("id 不能为空", c)
 		return
 	}
-	err = global.GNA_DB.Model(&SysJobLevel{}).Where("id = ?", row.ID).Updates(map[string]interface{}{
+	err = dbctx.Use(c).Model(&SysJobLevel{}).Where("id = ?", row.ID).Updates(map[string]interface{}{
 		"level_name": row.LevelName,
 		"level":      row.Level,
 	}).Error
@@ -154,7 +155,7 @@ func (s *_positionService) DeletePosition(c *gin.Context) {
 		response.FailWithMessage("id 不能为空", c)
 		return
 	}
-	err := global.GNA_DB.Where("id = ?", id).Delete(&SysJobLevel{}).Error
+	err := dbctx.Use(c).Where("id = ?", id).Delete(&SysJobLevel{}).Error
 	if err != nil {
 		global.GNA_LOG.Error("删除职务级别失败：" + err.Error())
 		response.FailWithMessage("删除职务级别失败", c)

@@ -1,6 +1,7 @@
 package login
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -146,7 +147,8 @@ func (ls *_LoginService) CreateToken(c *gin.Context, userInfo user.SysUser) {
 		return
 	}
 
-	_ = global.GNA_DB.Model(&user.SysUser{}).Where("id = ?", userInfo.ID).Update("last_login_time", time.Now()).Error
+	db := global.GNA_DB.WithContext(global.WithOperatorUserID(context.Background(), userInfo.ID))
+	_ = db.Model(&user.SysUser{}).Where("id = ?", userInfo.ID).Update("last_login_time", time.Now()).Error
 	log.SaveLoginLogAsync(userInfo.ID, userInfo.Account, c.ClientIP(), 1, "登录成功")
 
 	roles := loadUserRoleCodes(userInfo.ID)

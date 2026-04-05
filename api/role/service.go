@@ -4,6 +4,7 @@ import (
 	"gin-admin-server/api/menu"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,7 @@ func (r *_roleService) GetRoleList(c *gin.Context) {
 		response.FailWithMessage(errMessage, c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysRole{})
+	db := dbctx.Use(c).Model(&SysRole{})
 	if roleRequest.Name != "" {
 		db = db.Where("name LIKE ?", "%"+roleRequest.Name+"%")
 	}
@@ -82,7 +83,7 @@ func (r *_roleService) AddRole(c *gin.Context) {
 		return
 	}
 
-	err = global.GNA_DB.Create(&roleReq).Error
+	err = dbctx.Use(c).Create(&roleReq).Error
 	if err != nil {
 		global.GNA_LOG.Error("添加角色失败：" + err.Error())
 		response.FailWithMessage("添加角色失败", c)
@@ -107,7 +108,7 @@ func (r *_roleService) QueryRole(c *gin.Context) {
 		return
 	}
 	var sysRole SysRole
-	err := global.GNA_DB.Where("id = ?", id).First(&sysRole).Error
+	err := dbctx.Use(c).Where("id = ?", id).First(&sysRole).Error
 	if err != nil {
 		global.GNA_LOG.Error("查询角色失败：" + err.Error())
 		response.FailWithMessage("查询角色失败", c)
@@ -135,7 +136,7 @@ func (r *_roleService) EditRole(c *gin.Context) {
 		return
 	}
 
-	err = global.GNA_DB.Model(&roleReq).Updates(roleReq).Error
+	err = dbctx.Use(c).Model(&roleReq).Updates(roleReq).Error
 	if err != nil {
 		global.GNA_LOG.Error("修改角色失败：" + err.Error())
 		response.FailWithMessage("修改角色失败", c)
@@ -160,7 +161,7 @@ func (r *_roleService) DeleteRole(c *gin.Context) {
 		return
 	}
 
-	err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+	err := dbctx.Use(c).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Exec("DELETE FROM sys_user_role WHERE sys_role_id = ?", id).Error; err != nil {
 			return err
 		}
@@ -202,7 +203,7 @@ func (r *_roleService) GetPowerTree(c *gin.Context) {
 
 	var menus []*menu.SysMenu
 	var powers []*uint
-	err := global.GNA_DB.Order("sort ASC").Find(&menus).Error
+	err := dbctx.Use(c).Order("sort ASC").Find(&menus).Error
 	if err != nil {
 		global.GNA_LOG.Error("获取全部权限列表失败: " + err.Error())
 		response.FailWithMessage("获取全部权限列表失败", c)
@@ -211,7 +212,7 @@ func (r *_roleService) GetPowerTree(c *gin.Context) {
 
 	powerTree := r.buildPowersTree(menus, 0)
 
-	err = global.GNA_DB.Table("sys_role_menu").
+	err = dbctx.Use(c).Table("sys_role_menu").
 		Where("sys_role_id = ?", id).
 		Pluck("sys_menu_id", &powers).Error
 	if err != nil {
@@ -264,7 +265,7 @@ func (r *_roleService) SetRolePower(c *gin.Context) {
 		return
 	}
 
-	err = global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+	err = dbctx.Use(c).Transaction(func(tx *gorm.DB) error {
 		err := tx.Exec("DELETE FROM sys_role_menu WHERE sys_role_id = ?", setPowerReq.RoleId).Error
 		if err != nil {
 			return err

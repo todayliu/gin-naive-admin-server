@@ -3,6 +3,7 @@ package sysconfig
 import (
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -48,7 +49,7 @@ func pickSiteCopyright(m map[string]string) string {
 // @Router      /config/site-display [get]
 func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
 	var rows []SysConfig
-	if err := global.GNA_DB.Where("config_key IN ?", siteDisplayKeys).Find(&rows).Error; err != nil {
+	if err := dbctx.Use(c).Where("config_key IN ?", siteDisplayKeys).Find(&rows).Error; err != nil {
 		global.GNA_LOG.Error("读取站点展示配置失败", zap.Error(err))
 		response.FailWithMessage("读取失败", c)
 		return
@@ -72,7 +73,7 @@ func (s *_sysConfigService) SiteDisplay(c *gin.Context) {
 // @Router      /config/list [get]
 func (s *_sysConfigService) List(c *gin.Context) {
 	var list []SysConfig
-	if err := global.GNA_DB.Order("config_key asc").Find(&list).Error; err != nil {
+	if err := dbctx.Use(c).Order("config_key asc").Find(&list).Error; err != nil {
 		response.FailWithMessage("查询失败", c)
 		return
 	}
@@ -102,7 +103,7 @@ func (s *_sysConfigService) Add(c *gin.Context) {
 		return
 	}
 	var n int64
-	global.GNA_DB.Model(&SysConfig{}).Where("config_key = ?", req.ConfigKey).Count(&n)
+	dbctx.Use(c).Model(&SysConfig{}).Where("config_key = ?", req.ConfigKey).Count(&n)
 	if n > 0 {
 		response.FailWithMessage("参数键已存在", c)
 		return
@@ -112,7 +113,7 @@ func (s *_sysConfigService) Add(c *gin.Context) {
 		ConfigValue: req.ConfigValue,
 		Remark:      req.Remark,
 	}
-	if err := global.GNA_DB.Create(&row).Error; err != nil {
+	if err := dbctx.Use(c).Create(&row).Error; err != nil {
 		global.GNA_LOG.Error("新增参数失败", zap.Error(err))
 		response.FailWithMessage("新增失败", c)
 		return
@@ -135,7 +136,7 @@ func (s *_sysConfigService) Edit(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	err := global.GNA_DB.Model(&SysConfig{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
+	err := dbctx.Use(c).Model(&SysConfig{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
 		"config_key":   req.ConfigKey,
 		"config_value": req.ConfigValue,
 		"remark":       req.Remark,

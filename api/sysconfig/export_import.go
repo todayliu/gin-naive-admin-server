@@ -10,6 +10,7 @@ import (
 
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -27,7 +28,7 @@ func sysConfigCSVHeader() []string {
 // ExportConfigs 导出全部系统参数 CSV（UTF-8 BOM）
 func (s *_sysConfigService) ExportConfigs(c *gin.Context) {
 	var list []SysConfig
-	if err := global.GNA_DB.Order("config_key asc").Find(&list).Error; err != nil {
+	if err := dbctx.Use(c).Order("config_key asc").Find(&list).Error; err != nil {
 		global.GNA_LOG.Error("导出参数失败", zap.Error(err))
 		response.FailWithMessage("导出参数失败", c)
 		return
@@ -178,13 +179,13 @@ func (s *_sysConfigService) ImportConfigs(c *gin.Context) {
 			continue
 		}
 		var n int64
-		global.GNA_DB.Model(&SysConfig{}).Where("config_key = ?", key).Count(&n)
+		dbctx.Use(c).Model(&SysConfig{}).Where("config_key = ?", key).Count(&n)
 		if n > 0 {
 			result.SkipCount++
 			continue
 		}
 		row := SysConfig{ConfigKey: key, ConfigValue: val, Remark: remark}
-		if err := global.GNA_DB.Create(&row).Error; err != nil {
+		if err := dbctx.Use(c).Create(&row).Error; err != nil {
 			global.GNA_LOG.Error("导入参数失败", zap.Error(err))
 			result.FailCount++
 			if len(result.Errors) < maxErr {

@@ -13,6 +13,7 @@ import (
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
 	"gin-admin-server/utils"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -111,7 +112,7 @@ func (us *_userService) ExportUsers(c *gin.Context) {
 			SysUserID uint   `gorm:"column:sys_user_id"`
 			Name      string `gorm:"column:name"`
 		}
-		_ = global.GNA_DB.Table("sys_user_role ur").
+		_ = dbctx.Use(c).Table("sys_user_role ur").
 			Select("ur.sys_user_id, r.name").
 			Joins("JOIN sys_role r ON r.id = ur.sys_role_id").
 			Where("ur.sys_user_id IN ?", ids).
@@ -128,7 +129,7 @@ func (us *_userService) ExportUsers(c *gin.Context) {
 			SysUserID       uint `gorm:"column:sys_user_id"`
 			SysDepartmentID uint `gorm:"column:sys_department_id"`
 		}
-		_ = global.GNA_DB.Table("sys_user_department").
+		_ = dbctx.Use(c).Table("sys_user_department").
 			Select("sys_user_id, sys_department_id").
 			Where("sys_user_id IN ?", ids).
 			Order("sys_department_id").
@@ -144,7 +145,7 @@ func (us *_userService) ExportUsers(c *gin.Context) {
 			SysUserID     uint `gorm:"column:sys_user_id"`
 			SysJobLevelID uint `gorm:"column:sys_job_level_id"`
 		}
-		_ = global.GNA_DB.Table("sys_user_job_level").
+		_ = dbctx.Use(c).Table("sys_user_job_level").
 			Select("sys_user_id, sys_job_level_id").
 			Where("sys_user_id IN ?", ids).
 			Order("sys_job_level_id").
@@ -615,7 +616,7 @@ func (us *_userService) ImportUsers(c *gin.Context) {
 			JobLevelID:   primaryJL,
 		}
 
-		err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+		err := dbctx.Use(c).Transaction(func(tx *gorm.DB) error {
 			if err := tx.Create(&user).Error; err != nil {
 				return err
 			}

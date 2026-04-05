@@ -11,6 +11,7 @@ import (
 
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -28,8 +29,8 @@ func positionCSVHeader() []string {
 	return []string{"职务级别名称", "职务级别数值"}
 }
 
-func buildPositionExportQuery(f *PositionListFilters) *gorm.DB {
-	db := global.GNA_DB.Model(&SysJobLevel{})
+func buildPositionExportQuery(c *gin.Context, f *PositionListFilters) *gorm.DB {
+	db := dbctx.Use(c).Model(&SysJobLevel{})
 	if f.LevelName != "" {
 		db = db.Where("level_name LIKE ?", "%"+f.LevelName+"%")
 	}
@@ -45,7 +46,7 @@ func (s *_positionService) ExportPositions(c *gin.Context) {
 		return
 	}
 	var list []SysJobLevel
-	if err := buildPositionExportQuery(&filters).Order("level ASC, id ASC").Limit(positionExportMaxRows).Find(&list).Error; err != nil {
+	if err := buildPositionExportQuery(c, &filters).Order("level ASC, id ASC").Limit(positionExportMaxRows).Find(&list).Error; err != nil {
 		global.GNA_LOG.Error("导出职务失败", zap.Error(err))
 		response.FailWithMessage("导出职务失败", c)
 		return
@@ -199,7 +200,7 @@ func (s *_positionService) ImportPositions(c *gin.Context) {
 			continue
 		}
 		var exist SysJobLevel
-		if err := global.GNA_DB.Where("level_name = ?", name).First(&exist).Error; err == nil {
+		if err := dbctx.Use(c).Where("level_name = ?", name).First(&exist).Error; err == nil {
 			result.SkipCount++
 			continue
 		} else if err != gorm.ErrRecordNotFound {
@@ -210,7 +211,7 @@ func (s *_positionService) ImportPositions(c *gin.Context) {
 			continue
 		}
 		row := SysJobLevel{LevelName: name, Level: uint(lv)}
-		if err := global.GNA_DB.Create(&row).Error; err != nil {
+		if err := dbctx.Use(c).Create(&row).Error; err != nil {
 			global.GNA_LOG.Error("导入职务失败", zap.Error(err))
 			result.FailCount++
 			if len(result.Errors) < maxErr {

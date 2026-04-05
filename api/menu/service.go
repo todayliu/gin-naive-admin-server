@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/jwt_util"
 	"gin-admin-server/utils/validator"
 	"sort"
@@ -142,7 +143,7 @@ func (ms *_menuService) convertMenuToRoute(menu *SysMenu) MenuResponse {
 // @Router      /menu/list [get]
 func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 	var menus []*SysMenu
-	err := global.GNA_DB.Order("sort ASC").Find(&menus).Error
+	err := dbctx.Use(c).Order("sort ASC").Find(&menus).Error
 	if err != nil {
 		global.GNA_LOG.Error("获取菜单列表失败: " + err.Error())
 		response.FailWithMessage("获取菜单列表失败", c)
@@ -155,7 +156,7 @@ func (ms *_menuService) GetAllMenuList(c *gin.Context) {
 }
 
 // fillMenuNameIfEmpty 路由 name 唯一；未填时由 perms 或标题生成，避免 Create 失败
-func (ms *_menuService) fillMenuNameIfEmpty(menu *SysMenu) {
+func (ms *_menuService) fillMenuNameIfEmpty(c *gin.Context, menu *SysMenu) {
 	if strings.TrimSpace(menu.Name) != "" {
 		return
 	}
@@ -177,7 +178,7 @@ func (ms *_menuService) fillMenuNameIfEmpty(menu *SysMenu) {
 			candidate = fmt.Sprintf("%s_%d", base, i)
 		}
 		var cnt int64
-		global.GNA_DB.Model(&SysMenu{}).Where("name = ?", candidate).Count(&cnt)
+		dbctx.Use(c).Model(&SysMenu{}).Where("name = ?", candidate).Count(&cnt)
 		if cnt == 0 {
 			menu.Name = candidate
 			return
@@ -202,8 +203,8 @@ func (ms *_menuService) AddMenu(c *gin.Context) {
 		return
 	}
 	menu.ID = 0
-	ms.fillMenuNameIfEmpty(&menu)
-	if err := global.GNA_DB.Create(&menu).Error; err != nil {
+	ms.fillMenuNameIfEmpty(c, &menu)
+	if err := dbctx.Use(c).Create(&menu).Error; err != nil {
 		global.GNA_LOG.Error("新增菜单失败", zap.Error(err))
 		response.FailWithMessage("新增菜单失败", c)
 		return
@@ -234,7 +235,7 @@ func (ms *_menuService) UpdateMenu(c *gin.Context) {
 		response.FailWithMessage("缺少菜单 id，请使用 POST /api/menu/add 新增", c)
 		return
 	}
-	err = global.GNA_DB.Save(&menu).Error
+	err = dbctx.Use(c).Save(&menu).Error
 
 	if err != nil {
 		global.GNA_LOG.Error("菜单修改失败：" + err.Error())
@@ -260,7 +261,7 @@ func (ms *_menuService) DeleteMenu(c *gin.Context) {
 		return
 	}
 
-	err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+	err := dbctx.Use(c).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Exec("DELETE FROM sys_role_menu WHERE sys_menu_id = ?", id).Error; err != nil {
 			return err
 		}

@@ -1,8 +1,10 @@
 package log
 
 import (
+	"context"
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 	"strconv"
 	"time"
@@ -34,7 +36,8 @@ func SaveLoginLogAsync(userId uint, account, ip string, status int, msg string) 
 			Status:  status,
 			Msg:     msg,
 		}
-		if err := global.GNA_DB.Create(&row).Error; err != nil {
+		db := global.GNA_DB.WithContext(global.WithOperatorUserID(context.Background(), userId))
+		if err := db.Create(&row).Error; err != nil {
 			global.GNA_LOG.Error("写入登录日志失败", zap.Error(err))
 		}
 	}()
@@ -61,7 +64,8 @@ func SaveOperLogAsync(title, method, path string, userId uint, account, ip strin
 			LatencyMs: latencyMs,
 			Status:    status,
 		}
-		if err := global.GNA_DB.Create(&row).Error; err != nil {
+		db := global.GNA_DB.WithContext(global.WithOperatorUserID(context.Background(), userId))
+		if err := db.Create(&row).Error; err != nil {
 			global.GNA_LOG.Error("写入操作日志失败", zap.Error(err))
 		}
 	}()
@@ -86,7 +90,7 @@ func (s *_logService) GetLoginLogList(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysLoginLog{})
+	db := dbctx.Use(c).Model(&SysLoginLog{})
 	if req.Account != "" {
 		db = db.Where("account LIKE ?", "%"+req.Account+"%")
 	}
@@ -135,7 +139,7 @@ func (s *_logService) GetOperLogList(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysOperLog{})
+	db := dbctx.Use(c).Model(&SysOperLog{})
 	if req.Account != "" {
 		db = db.Where("account LIKE ?", "%"+req.Account+"%")
 	}

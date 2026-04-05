@@ -3,6 +3,7 @@ package dict
 import (
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 	"gin-admin-server/utils/validator"
 
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,7 @@ func (d *_dictService) GetDictTypeList(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysDictType{})
+	db := dbctx.Use(c).Model(&SysDictType{})
 	if req.TypeCode != "" {
 		db = db.Where("type_code LIKE ?", "%"+req.TypeCode+"%")
 	}
@@ -82,9 +83,9 @@ func (d *_dictService) AddDictType(c *gin.Context) {
 	}
 	// 检查是否存在已软删除的相同类型编码，若存在则恢复
 	var deleted SysDictType
-	err := global.GNA_DB.Unscoped().Where("type_code = ? AND delete_time IS NOT NULL", req.TypeCode).First(&deleted).Error
+	err := dbctx.Use(c).Unscoped().Where("type_code = ? AND delete_time IS NOT NULL", req.TypeCode).First(&deleted).Error
 	if err == nil {
-		if err := global.GNA_DB.Unscoped().Model(&SysDictType{}).Where("id = ?", deleted.ID).Updates(map[string]interface{}{
+		if err := dbctx.Use(c).Unscoped().Model(&SysDictType{}).Where("id = ?", deleted.ID).Updates(map[string]interface{}{
 			"delete_time": nil,
 			"type_name":   req.TypeName,
 			"status":      req.Status,
@@ -105,7 +106,7 @@ func (d *_dictService) AddDictType(c *gin.Context) {
 	}
 	// 检查是否存在未删除的重复
 	var exist SysDictType
-	if err := global.GNA_DB.Where("type_code = ?", req.TypeCode).First(&exist).Error; err == nil {
+	if err := dbctx.Use(c).Where("type_code = ?", req.TypeCode).First(&exist).Error; err == nil {
 		response.FailWithMessage("字典类型编码已存在", c)
 		return
 	}
@@ -114,7 +115,7 @@ func (d *_dictService) AddDictType(c *gin.Context) {
 		response.FailWithMessage("添加失败", c)
 		return
 	}
-	if err := global.GNA_DB.Create(&req).Error; err != nil {
+	if err := dbctx.Use(c).Create(&req).Error; err != nil {
 		global.GNA_LOG.Error("添加字典类型失败", zap.Error(err))
 		response.FailWithMessage("添加失败", c)
 		return
@@ -137,7 +138,7 @@ func (d *_dictService) EditDictType(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	if err := global.GNA_DB.Model(&SysDictType{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
+	if err := dbctx.Use(c).Model(&SysDictType{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
 		"type_name": req.TypeName,
 		"status":    req.Status,
 		"remark":    req.Remark,
@@ -165,11 +166,11 @@ func (d *_dictService) DeleteDictType(c *gin.Context) {
 		return
 	}
 	var dictType SysDictType
-	if err := global.GNA_DB.Where("id = ?", id).First(&dictType).Error; err != nil {
+	if err := dbctx.Use(c).Where("id = ?", id).First(&dictType).Error; err != nil {
 		response.FailWithMessage("字典类型不存在", c)
 		return
 	}
-	if err := global.GNA_DB.Transaction(func(tx *gorm.DB) error {
+	if err := dbctx.Use(c).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where("type_code = ?", dictType.TypeCode).Delete(&SysDictData{}).Error; err != nil {
 			return err
 		}
@@ -202,7 +203,7 @@ func (d *_dictService) GetDictDataList(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	db := global.GNA_DB.Model(&SysDictData{})
+	db := dbctx.Use(c).Model(&SysDictData{})
 	if req.TypeCode != "" {
 		db = db.Where("type_code = ?", req.TypeCode)
 	}
@@ -250,9 +251,9 @@ func (d *_dictService) AddDictData(c *gin.Context) {
 	}
 	// 检查是否存在已软删除的相同数据，若存在则恢复
 	var deleted SysDictData
-	err := global.GNA_DB.Unscoped().Where("type_code = ? AND label = ? AND value = ? AND delete_time IS NOT NULL", req.TypeCode, req.Label, req.Value).First(&deleted).Error
+	err := dbctx.Use(c).Unscoped().Where("type_code = ? AND label = ? AND value = ? AND delete_time IS NOT NULL", req.TypeCode, req.Label, req.Value).First(&deleted).Error
 	if err == nil {
-		if err := global.GNA_DB.Unscoped().Model(&SysDictData{}).Where("id = ?", deleted.ID).Updates(map[string]interface{}{
+		if err := dbctx.Use(c).Unscoped().Model(&SysDictData{}).Where("id = ?", deleted.ID).Updates(map[string]interface{}{
 			"delete_time": nil,
 			"status":      req.Status,
 			"remark":      req.Remark,
@@ -272,7 +273,7 @@ func (d *_dictService) AddDictData(c *gin.Context) {
 	}
 	// 检查是否存在未删除的重复数据
 	var exist SysDictData
-	err = global.GNA_DB.Where("type_code = ? AND label = ? AND value = ?", req.TypeCode, req.Label, req.Value).First(&exist).Error
+	err = dbctx.Use(c).Where("type_code = ? AND label = ? AND value = ?", req.TypeCode, req.Label, req.Value).First(&exist).Error
 	if err == nil {
 		response.FailWithMessage("该字典类型下已存在相同的标签和值", c)
 		return
@@ -282,7 +283,7 @@ func (d *_dictService) AddDictData(c *gin.Context) {
 		response.FailWithMessage("添加失败", c)
 		return
 	}
-	if err := global.GNA_DB.Create(&req).Error; err != nil {
+	if err := dbctx.Use(c).Create(&req).Error; err != nil {
 		global.GNA_LOG.Error("添加字典数据失败", zap.Error(err))
 		response.FailWithMessage("添加失败", c)
 		return
@@ -305,7 +306,7 @@ func (d *_dictService) EditDictData(c *gin.Context) {
 		response.FailWithMessage(validator.GetValidatorErrorMessage(err, req), c)
 		return
 	}
-	if err := global.GNA_DB.Model(&SysDictData{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
+	if err := dbctx.Use(c).Model(&SysDictData{}).Where("id = ?", req.ID).Updates(map[string]interface{}{
 		"type_code": req.TypeCode,
 		"label":     req.Label,
 		"value":     req.Value,
@@ -334,7 +335,7 @@ func (d *_dictService) DeleteDictData(c *gin.Context) {
 		response.FailWithMessage("id 不能为空", c)
 		return
 	}
-	if err := global.GNA_DB.Where("id = ?", id).Delete(&SysDictData{}).Error; err != nil {
+	if err := dbctx.Use(c).Where("id = ?", id).Delete(&SysDictData{}).Error; err != nil {
 		global.GNA_LOG.Error("删除字典数据失败", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 		return
@@ -357,7 +358,7 @@ func (d *_dictService) GetDictByType(c *gin.Context) {
 		return
 	}
 	var list []SysDictData
-	if err := global.GNA_DB.Where("type_code = ? AND status = 1", typeCode).Order("sort ASC").Find(&list).Error; err != nil {
+	if err := dbctx.Use(c).Where("type_code = ? AND status = 1", typeCode).Order("sort ASC").Find(&list).Error; err != nil {
 		global.GNA_LOG.Error("获取字典数据失败", zap.Error(err))
 		response.FailWithMessage("获取字典数据失败", c)
 		return

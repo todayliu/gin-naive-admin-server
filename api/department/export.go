@@ -9,6 +9,7 @@ import (
 
 	"gin-admin-server/global"
 	"gin-admin-server/model/response"
+	"gin-admin-server/utils/dbctx"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -17,7 +18,7 @@ import (
 // ExportDepartmentPaths 导出部门层级路径为单列 CSV（表头「部门路径」；每行一条从根到该节点的完整路径，用 / 分隔；UTF-8 BOM，树序：先序遍历）
 func (ds *_departmentService) ExportDepartmentPaths(c *gin.Context) {
 	var list []SysDepartment
-	if err := global.GNA_DB.Order("parent_id ASC, sort ASC, id ASC").Find(&list).Error; err != nil {
+	if err := dbctx.Use(c).Order("parent_id ASC, sort ASC, id ASC").Find(&list).Error; err != nil {
 		global.GNA_LOG.Error("导出部门失败", zap.Error(err))
 		response.FailWithMessage("导出部门失败", c)
 		return

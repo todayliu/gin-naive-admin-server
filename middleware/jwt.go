@@ -40,6 +40,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Header("New-Access-Token", newToken)
 		}
 		c.Set("claims", claims)
+		c.Request = c.Request.WithContext(global.WithOperatorUserID(c.Request.Context(), claims.BaseClaims.ID))
 		c.Next()
 	}
 }
