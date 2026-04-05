@@ -1,0 +1,4 @@
+INSERT INTO `gin-naive-admin`.sys_dict_data (id, create_time, update_time, delete_time, type_code, label, value, status, remark, sort) VALUES (3, '2026-03-21 01:07:12.545', '2026-03-21 01:07:20.979', null, 'sex', '男', '1', 1, '', 1);
+INSERT INTO `gin-naive-admin`.sys_dict_data (id, create_time, update_time, delete_time, type_code, label, value, status, remark, sort) VALUES (4, '2026-03-21 01:07:28.278', '2026-03-21 01:07:28.278', null, 'sex', '女', '2', 1, '', 2);
+INSERT INTO `gin-naive-admin`.sys_dict_data (id, create_time, update_time, delete_time, type_code, label, value, status, remark, sort) VALUES (5, '2026-03-29 16:48:54.181', '2026-03-29 16:48:54.181', null, 'status', '启用', '1', 1, '', 1);
+INSERT INTO `gin-naive-admin`.sys_dict_data (id, create_time, update_time, delete_time, type_code, label, value, status, remark, sort) VALUES (6, '2026-03-29 16:49:07.786', '2026-03-29 16:49:07.786', null, 'status', '禁用', '2', 1, '', 2);

@@ -1,0 +1,2 @@
+INSERT INTO `gin-naive-admin`.sys_dict_type (id, create_time, update_time, delete_time, type_code, type_name, status, remark, sort) VALUES (20, '2026-03-21 01:06:03.565', '2026-03-21 01:15:21.717', null, 'sex', '用户性别', 1, '用户性别', 1);
+INSERT INTO `gin-naive-admin`.sys_dict_type (id, create_time, update_time, delete_time, type_code, type_name, status, remark, sort) VALUES (21, '2026-03-29 16:48:43.789', '2026-03-29 16:48:43.789', null, 'status', '状态', 1, '状态', 2);

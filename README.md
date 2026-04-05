@@ -29,7 +29,7 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 | `utils/` | JWT、验证码 Redis、时间、校验器文案、目录等工具包 |
 | `config.development.yaml` / `config.release.yaml` | 环境与运行配置示例 |
 | `docs/` | `swag` 生成的 OpenAPI 文档（`docs.go`、`swagger.json`、`swagger.yaml`） |
-| `scripts/` | 历史或增量 SQL 片段，以应用内迁移为准 |
+| `scripts/` | MySQL 库表 SQL（全量导出 + 按表拆分），详见下文 **数据库脚本** |
 
 ### `api/` 模块一览
 
@@ -121,9 +121,25 @@ go build -o gin-naive-admin .
 - `.gitignore` 中使用 **`/log/`**（仅仓库根目录下的运行日志目录）。  
 - **不要**写成无斜杠的 `log/`，否则会误忽略 **`api/log/`** 等业务源码目录。
 
-## 补充脚本
+## 数据库脚本（`scripts/`）
 
-`scripts/` 下为历史或增量 SQL 片段，可按迁移需要参考使用；以应用内 GORM 迁移与种子逻辑为准。
+目录中与当前业务模型对应的主要文件如下（**以应用内 GORM `AutoMigrate` + 种子逻辑为权威**；SQL 用于备份、迁库、本地一键灌库或与 DBA 交接时参考）。
+
+| 文件 | 说明 |
+|------|------|
+| `gin-naive-admin.sql` | **全库** mysqldump：库名 `gin-naive-admin`，含表结构、`DROP/CREATE`、示例/种子数据（utf8mb4）。新建空库后可 `mysql ... < gin-naive-admin.sql` 做完整还原（注意与配置文件 `database.db_name` 一致）。 |
+| `sys_config.sql` | 系统参数表 |
+| `sys_department.sql` | 部门表 |
+| `sys_dict_type.sql` / `sys_dict_data.sql` | 字典类型 / 字典数据 |
+| `sys_job_level.sql` | 职务级别 |
+| `sys_login_log.sql` / `sys_oper_log.sql` | 登录日志 / 操作日志 |
+| `sys_menu.sql` | 菜单 |
+| `sys_role.sql` / `sys_role_menu.sql` | 角色 / 角色-菜单 |
+| `sys_user.sql` / `sys_user_role.sql` / `sys_user_department.sql` / `sys_user_job_level.sql` | 用户及关联表 |
+
+按表拆分的部分脚本中，语句可能带库名限定（例如 `` `gin-naive-admin`.表名 ``）。若你的库名不同，导入前请全局替换或改为 `USE 你的库名;` 后执行。
+
+**日常开发**：一般只需空库 + 正确配置后启动服务，由程序建表并写入种子；仅在需要与导出数据一致、或离线恢复时使用上述 SQL。
 
 ## 安全提示
 
