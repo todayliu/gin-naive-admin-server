@@ -1841,8 +1841,18 @@ const docTemplate = `{
                 "code": {
                     "type": "string"
                 },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createByName": {
+                    "description": "展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联 sys_user.u_name 填充",
+                    "type": "string"
+                },
                 "createTime": {
                     "type": "string"
+                },
+                "deleteBy": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1862,6 +1872,12 @@ const docTemplate = `{
                 "status": {
                     "type": "integer"
                 },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updateByName": {
+                    "type": "string"
+                },
                 "updateTime": {
                     "type": "string"
                 }
@@ -1875,8 +1891,18 @@ const docTemplate = `{
                 "value"
             ],
             "properties": {
+                "createBy": {
+                    "type": "integer"
+                },
+                "createByName": {
+                    "description": "展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联 sys_user.u_name 填充",
+                    "type": "string"
+                },
                 "createTime": {
                     "type": "string"
+                },
+                "deleteBy": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1896,6 +1922,12 @@ const docTemplate = `{
                 "typeCode": {
                     "type": "string"
                 },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updateByName": {
+                    "type": "string"
+                },
                 "updateTime": {
                     "type": "string"
                 },
@@ -1911,8 +1943,18 @@ const docTemplate = `{
                 "typeName"
             ],
             "properties": {
+                "createBy": {
+                    "type": "integer"
+                },
+                "createByName": {
+                    "description": "展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联 sys_user.u_name 填充",
+                    "type": "string"
+                },
                 "createTime": {
                     "type": "string"
+                },
+                "deleteBy": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -1930,6 +1972,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "typeName": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updateByName": {
                     "type": "string"
                 },
                 "updateTime": {
@@ -1988,8 +2036,18 @@ const docTemplate = `{
                 "component": {
                     "type": "string"
                 },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createByName": {
+                    "description": "展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联 sys_user.u_name 填充",
+                    "type": "string"
+                },
                 "createTime": {
                     "type": "string"
+                },
+                "deleteBy": {
+                    "type": "integer"
                 },
                 "fixedInTabs": {
                     "type": "boolean"
@@ -2047,6 +2105,12 @@ const docTemplate = `{
                 "type": {
                     "type": "string"
                 },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updateByName": {
+                    "type": "string"
+                },
                 "updateTime": {
                     "type": "string"
                 }
@@ -2059,8 +2123,18 @@ const docTemplate = `{
                 "levelName"
             ],
             "properties": {
+                "createBy": {
+                    "type": "integer"
+                },
+                "createByName": {
+                    "description": "展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联 sys_user.u_name 填充",
+                    "type": "string"
+                },
                 "createTime": {
                     "type": "string"
+                },
+                "deleteBy": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -2069,6 +2143,12 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "levelName": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updateByName": {
                     "type": "string"
                 },
                 "updateTime": {
@@ -2165,8 +2245,18 @@ const docTemplate = `{
                 "code": {
                     "type": "string"
                 },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createByName": {
+                    "description": "展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联 sys_user.u_name 填充",
+                    "type": "string"
+                },
                 "createTime": {
                     "type": "string"
+                },
+                "deleteBy": {
+                    "type": "integer"
                 },
                 "description": {
                     "type": "string"
@@ -2179,6 +2269,12 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updateByName": {
+                    "type": "string"
                 },
                 "updateTime": {
                     "type": "string"

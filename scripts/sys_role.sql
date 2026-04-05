@@ -1,2 +1,2 @@
-INSERT INTO `gin-naive-admin`.sys_role (id, create_time, update_time, delete_time, code, name, description, status) VALUES (1, '2026-02-05 20:34:48.631', '2026-03-25 23:24:56.383', null, 'admin', '超级管理员', '', 1);
-INSERT INTO `gin-naive-admin`.sys_role (id, create_time, update_time, delete_time, code, name, description, status) VALUES (11, '2026-02-06 00:31:29.818', '2026-02-07 16:03:56.253', null, 'admin2', '管理员2', '123456', 1);
+INSERT INTO `gin-naive-admin`.sys_role (id, create_time, update_time, delete_time, code, name, description, status, create_by, update_by, delete_by) VALUES (1, '2026-02-05 20:34:48.631', '2026-03-25 23:24:56.383', null, 'admin', '超级管理员', '', 1, 0, 0, 0);
+INSERT INTO `gin-naive-admin`.sys_role (id, create_time, update_time, delete_time, code, name, description, status, create_by, update_by, delete_by) VALUES (11, '2026-02-06 00:31:29.818', '2026-02-07 16:03:56.253', null, 'admin2', '管理员2', '123456', 1, 0, 0, 0);

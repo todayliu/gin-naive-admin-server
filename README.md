@@ -1,6 +1,8 @@
 # Gin Naive Admin（后端）
 
-Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权、用户/角色/菜单、部门、字典、职务、文件上传、仪表盘、登录与操作日志、系统参数、按钮权限接口等能力。
+Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端（同级目录 `gin-naive-admin-web`）提供登录鉴权、用户/角色/菜单、部门、字典、职务、文件上传、仪表盘、登录与操作日志、系统参数、按钮权限、**在线表单开发（devform）** 等能力。
+
+本仓库 **Go 模块名**（`go.mod` 中 `module`）为 **`gin-admin-server`**，全仓导入路径均以此为准；目录名可为 `gin-naive-admin-server` 等，与模块名独立。
 
 ## 技术栈
 
@@ -55,6 +57,8 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 2. **`GET /api/devform/download/:id`**：生成 **ZIP**（`backend/api/<表名>/` 下 `model.go`、`service.go`、`router.go` + `REGISTER.txt` + 前端 `src/views/generated/<表名>/`）。解压后请按包内 **`REGISTER.txt`** 将代码拷入工程并注册 `AutoMigrate` 与路由，再重启服务。
 3. 前端页面：`gin-naive-admin-web` 的 `src/views/develop/devform/`，需在 **菜单管理** 中增加菜单（component 填 `develop/devform/index.vue` 或与项目惯例一致的路径），并为角色授权。
 
+内置生成逻辑与模板源码位于 `api/devform/generate.go`、`api/devform/templates/`（如 `*.tpl`）；修改生成行为或模板后建议运行 `go test ./api/devform/...` 与 **`swag init`**（见下节）保持文档与行为一致。
+
 字段支持的 **db_type**：`varchar`（长度可配）、`text`、`int`、`bigint`、`tinyint`、`datetime`、`date`、`decimal`（小数位可配）；不可使用保留列名 `id` / `create_by` / `update_by` / `delete_by` / `create_time` / `update_time` / `delete_time`（与 `global.GNA_MODEL` 一致，由生成表结构统一带出）。
 
 ## 环境依赖
@@ -93,11 +97,13 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 
 - 文档中的 **`BasePath`** 为 `/api`，与配置项 `router.router-prefix` 一致；若修改前缀，请在 `main.go` 顶部的 swag 注释中同步修改 `@BasePath` 并重新生成文档。
 - 需登录的接口在 Swagger 中已标记 **`AccessToken`**，调试前点击右上角 **Authorize**，填入登录后获得的 JWT（请求头字段名 **`AccessToken`**，与前端一致）。
-- 修改或新增接口注释后，在项目根目录执行以下命令重新生成 `docs/`：
+- 修改或新增接口注释后，在 **本目录（含 `main.go` 的仓库根）** 执行以下命令重新生成 `docs/`：
 
 ```bash
 go run github.com/swaggo/swag/cmd/swag@v1.16.4 init -g main.go -o docs --parseDependency --parseInternal
 ```
+
+若本机 **zsh** 下出现与 `go run` 无关的报错（例如 `-e: command not found`），多为 shell 插件与命令行的交互问题，可改用 **`bash -lc '...'`** 包裹上述整行后再执行。首次运行会从网络下载 `swag` 及其依赖，需能访问 **Go module proxy**。
 
 ## 运行方式
 

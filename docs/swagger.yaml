@@ -8,8 +8,16 @@ definitions:
         type: array
       code:
         type: string
+      createBy:
+        type: integer
+      createByName:
+        description: 展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联
+          sys_user.u_name 填充
+        type: string
       createTime:
         type: string
+      deleteBy:
+        type: integer
       id:
         type: integer
       name:
@@ -22,6 +30,10 @@ definitions:
         type: integer
       status:
         type: integer
+      updateBy:
+        type: integer
+      updateByName:
+        type: string
       updateTime:
         type: string
     required:
@@ -29,8 +41,16 @@ definitions:
     type: object
   dict.SysDictData:
     properties:
+      createBy:
+        type: integer
+      createByName:
+        description: 展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联
+          sys_user.u_name 填充
+        type: string
       createTime:
         type: string
+      deleteBy:
+        type: integer
       id:
         type: integer
       label:
@@ -43,6 +63,10 @@ definitions:
         type: integer
       typeCode:
         type: string
+      updateBy:
+        type: integer
+      updateByName:
+        type: string
       updateTime:
         type: string
       value:
@@ -54,8 +78,16 @@ definitions:
     type: object
   dict.SysDictType:
     properties:
+      createBy:
+        type: integer
+      createByName:
+        description: 展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联
+          sys_user.u_name 填充
+        type: string
       createTime:
         type: string
+      deleteBy:
+        type: integer
       id:
         type: integer
       remark:
@@ -67,6 +99,10 @@ definitions:
       typeCode:
         type: string
       typeName:
+        type: string
+      updateBy:
+        type: integer
+      updateByName:
         type: string
       updateTime:
         type: string
@@ -107,8 +143,16 @@ definitions:
         type: array
       component:
         type: string
+      createBy:
+        type: integer
+      createByName:
+        description: 展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联
+          sys_user.u_name 填充
+        type: string
       createTime:
         type: string
+      deleteBy:
+        type: integer
       fixedInTabs:
         type: boolean
       hideInMenu:
@@ -147,6 +191,10 @@ definitions:
         type: string
       type:
         type: string
+      updateBy:
+        type: integer
+      updateByName:
+        type: string
       updateTime:
         type: string
     required:
@@ -154,13 +202,25 @@ definitions:
     type: object
   position.SysJobLevel:
     properties:
+      createBy:
+        type: integer
+      createByName:
+        description: 展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联
+          sys_user.u_name 填充
+        type: string
       createTime:
         type: string
+      deleteBy:
+        type: integer
       id:
         type: integer
       level:
         type: integer
       levelName:
+        type: string
+      updateBy:
+        type: integer
+      updateByName:
         type: string
       updateTime:
         type: string
@@ -226,8 +286,16 @@ definitions:
     properties:
       code:
         type: string
+      createBy:
+        type: integer
+      createByName:
+        description: 展示字段（无 DB 列）：由 FillAuditDisplayNames 按 create_by/update_by 关联
+          sys_user.u_name 填充
+        type: string
       createTime:
         type: string
+      deleteBy:
+        type: integer
       description:
         type: string
       id:
@@ -236,6 +304,10 @@ definitions:
         type: string
       status:
         type: integer
+      updateBy:
+        type: integer
+      updateByName:
+        type: string
       updateTime:
         type: string
     required:
