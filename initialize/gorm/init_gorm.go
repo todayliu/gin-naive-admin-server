@@ -1,7 +1,9 @@
 package gorm
 
 import (
+	"gin-admin-server/api/demo_dict"
 	"gin-admin-server/api/department"
+	"gin-admin-server/api/devform"
 	"gin-admin-server/api/dict"
 	"gin-admin-server/api/log"
 	"gin-admin-server/api/menu"
@@ -38,6 +40,7 @@ func InitGorm() *gorm.DB {
 	sqlDB, _ := db.DB()
 	sqlDB.SetMaxIdleConns(dbConfig.MaxIdleConns)
 	sqlDB.SetMaxOpenConns(dbConfig.MaxOpenConns)
+	registerAuditCallbacks(db)
 	return db
 }
 
@@ -58,6 +61,9 @@ func RegisterTables() {
 		log.SysLoginLog{},
 		log.SysOperLog{},
 		sysconfig.SysConfig{},
+		devform.SysOnlineForm{},
+		devform.SysOnlineFormField{},
+		demo_dict.DemoDict{},
 	)
 	if err != nil {
 		global.GNA_LOG.Error("注册数据表失败", zap.Error(err))

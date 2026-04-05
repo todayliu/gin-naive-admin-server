@@ -43,8 +43,19 @@ Gin 实现的 REST API 服务，为 **Gin Naive Admin** 前端提供登录鉴权
 | `log` | 登录日志、操作日志（异步写入 + 分页列表） |
 | `sysconfig` | 系统参数（含站点展示等公开接口） |
 | `permissionapi` | 按钮权限码等 |
+| `devform` | **在线表单开发**：元数据 CRUD、字段设计、同步 MySQL 建表/加列、生成前后端代码 ZIP 下载 |
 
 对外 API 统一前缀由配置项 **`router.router-prefix`** 控制，默认为 **`/api`**（例如健康检查：`GET /api/health`）。
+
+### 在线表单开发（`api/devform`）
+
+在后台设计「物理表名、实体名、路由组」与字段后：
+
+1. **`POST /api/devform/sync/:id`**：按字段元数据 **CREATE TABLE**（表不存在）或对已存在表 **ALTER ADD COLUMN**（仅缺列时）。
+2. **`GET /api/devform/download/:id`**：生成 **ZIP**（`backend/api/<表名>/` 下 `model.go`、`service.go`、`router.go` + `REGISTER.txt` + 前端 `src/views/generated/<表名>/`）。解压后请按包内 **`REGISTER.txt`** 将代码拷入工程并注册 `AutoMigrate` 与路由，再重启服务。
+3. 前端页面：`gin-naive-admin-web` 的 `src/views/develop/devform/`，需在 **菜单管理** 中增加菜单（component 填 `develop/devform/index.vue` 或与项目惯例一致的路径），并为角色授权。
+
+字段支持的 **db_type**：`varchar`（长度可配）、`text`、`int`、`bigint`、`tinyint`、`datetime`、`date`、`decimal`（小数位可配）；不可使用保留列名 `id` / `create_by` / `update_by` / `delete_by` / `create_time` / `update_time` / `delete_time`（与 `global.GNA_MODEL` 一致，由生成表结构统一带出）。
 
 ## 环境依赖
 

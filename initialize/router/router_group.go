@@ -2,7 +2,9 @@ package router
 
 import (
 	"gin-admin-server/api/dashboard"
+	"gin-admin-server/api/demo_dict"
 	"gin-admin-server/api/department"
+	"gin-admin-server/api/devform"
 	"gin-admin-server/api/dict"
 	"gin-admin-server/api/file"
 	"gin-admin-server/api/log"
@@ -51,6 +53,7 @@ func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {
 	profile.ProfileRouter.InitProfileRouter(PrivateGroup)
 	file.FileRouter.InitFileRouter(PrivateGroup)
 	dashboard.DashboardRouter.InitDashboardRouter(PrivateGroup)
+	devform.DevformRouter.InitDevformRouter(PrivateGroup)
 	log.LogRouter.InitLogRouter(PrivateGroup)
 	sysconfig.SysConfigRouter.InitSysConfigRouter(PrivateGroup)
 	department.DepartmentRouter.InitDepartmentRouter(PrivateGroup)
@@ -59,4 +62,5 @@ func (r *_routerGroup) SetupPrivateRouters(PrivateGroup *gin.RouterGroup) {
 	menu.MenuRouter.InitMenuRouter(PrivateGroup)
 	role.RoleRouter.InitRoleRouter(PrivateGroup)
 	user.UserRouter.InitUserRouter(PrivateGroup)
+	demo_dict.DemoDictRouter.InitDemoDictRouter(PrivateGroup)
 }
